@@ -105,11 +105,10 @@ local symbol(s, extra={}) = { action: { symbol: s } } + extra;
   enterButton: {
     action: 'enter',
     swipeUpAction: { symbol: '\r\n' },
-    text: '$returnKeyType',
+    systemImageName: 'return',
     notification: [
-      'returnKeyTypeChangedNotification',
       'preeditChangedForEnterButtonNotification',
-    ],
+    ] + ['returnKeyType' + std.toString(i) + 'ChangedNotification' for i in std.range(0, 11)],
   },
   symbolicButton: { action: { keyboardType: 'symbolic' }, text: '#+=' },
   numericButton: { action: { keyboardType: 'numeric' }, text: '123' },

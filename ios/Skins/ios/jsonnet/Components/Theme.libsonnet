@@ -20,19 +20,25 @@ local shiftUppercasedForegroundName = 'shiftButtonUppercasedForegroundStyle';
 local shiftCapsLockedForegroundName = 'shiftButtonCapsLockedForegroundStyle';
 
 // ===== 回车键随 returnKeyType 换色 =====
-// 「前往 / 搜索 / 发送」这一档是蓝底白字，其余是普通功能键的灰底黑字。
-// 两张表必须互补：漏掉某个取值，那个场景下回车键就没有样式，整颗键变透明。
-local plainReturnKeyTypes = [0, 2, 3, 5, 6, 8, 11];
-local blueReturnKeyTypes = [1, 4, 7, 9, 10];
+// 普通换行使用字母键背景，其余类型统一蓝底白字。
+local plainReturnKeyTypes = [0];
+local blueReturnKeyTypes = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 
 local enterBackgroundStyle = [
-  Style.when('$returnKeyType', plainReturnKeyTypes, systemBackgroundName),
+  Style.when('$returnKeyType', plainReturnKeyTypes, alphabeticBackgroundName),
   Style.when('$returnKeyType', blueReturnKeyTypes, blueBackgroundName),
 ];
 
+// 顺序对应 returnKeyType 0～11。
+local returnKeyIcons = [
+  'return', 'arrow.right', 'magnifyingglass', 'arrow.right',
+  'arrow.right.to.line', 'location.fill', 'magnifyingglass', 'arrow.up',
+  'magnifyingglass', 'checkmark', 'phone.fill', 'arrow.right',
+];
+local returnIconName(i) = 'returnKey' + std.toString(i) + 'ForegroundStyle';
 local enterForegroundStyle = [
-  Style.when('$returnKeyType', plainReturnKeyTypes, enterForegroundName),
-  Style.when('$returnKeyType', blueReturnKeyTypes, blueForegroundName),
+  Style.when('$returnKeyType', [i], returnIconName(i))
+  for i in std.range(0, 11)
 ];
 
 // 一份按键背景：圆角矩形 + 底部立体边缘。insets 决定键与键之间的缝隙，
@@ -77,18 +83,6 @@ local buttonBackground(insets, normalColor, highlightColor) = Style.geometry({
       insets, colors.blueButtonBackgroundColor, colors.blueButtonHighlightedBackgroundColor
     ),
 
-    [blueForegroundName]: Style.text({
-      normalColor: colors.blueButtonForegroundColor,
-      highlightColor: colors.blueButtonHighlightedForegroundColor,
-      fontSize: fonts.systemKeyText,
-      text: '$returnKeyType',
-    }),
-    [enterForegroundName]: Style.text({
-      normalColor: colors.systemButtonForegroundColor,
-      highlightColor: colors.systemButtonHighlightedForegroundColor,
-      fontSize: fonts.systemKeyText,
-      text: '$returnKeyType',
-    }),
     // 预编辑中的空格键：键面从「space 图标」换成「选定」两个字，点一下上屏首选。
     [commitCandidateForegroundName]: Style.text({
       normalColor: colors.standardButtonForegroundColor,
@@ -121,13 +115,6 @@ local buttonBackground(insets, normalColor, highlightColor) = Style.geometry({
 
     // ===== 通知：外部状态变了，按键换一套样式 =====
     // returnKeyType 变化时回车键换色；预编辑开始 / 结束时回车键与空格键换样式。
-    returnKeyTypeChangedNotification: {
-      notificationType: 'returnKeyType',
-      // 只有「前往 / 搜索 / 发送」这三档会在输入过程中变来变去，另外两档（9 继续、10 路由）不会
-      returnKeyType: [1, 4, 7],
-      backgroundStyle: blueBackgroundName,
-      foregroundStyle: blueForegroundName,
-    },
     preeditChangedForEnterButtonNotification: {
       notificationType: 'preeditChanged',
       backgroundStyle: enterBackgroundStyle,
@@ -138,5 +125,22 @@ local buttonBackground(insets, normalColor, highlightColor) = Style.geometry({
       backgroundStyle: alphabeticBackgroundName,
       foregroundStyle: commitCandidateForegroundName,
     },
+  } + {
+    [returnIconName(i)]: Style.systemImage({
+      systemImageName: returnKeyIcons[i],
+      fontSize: 20,
+      fontWeight: 'medium',
+      normalColor: if i == 0 then colors.systemButtonForegroundColor else '#FFFFFF',
+      highlightColor: if i == 0 then colors.systemButtonHighlightedForegroundColor else '#FFFFFF',
+    })
+    for i in std.range(0, 11)
+  } + {
+    ['returnKeyType' + std.toString(i) + 'ChangedNotification']: {
+      notificationType: 'returnKeyType',
+      returnKeyType: [i],
+      backgroundStyle: if i == 0 then alphabeticBackgroundName else blueBackgroundName,
+      foregroundStyle: returnIconName(i),
+    }
+    for i in std.range(0, 11)
   },
 }

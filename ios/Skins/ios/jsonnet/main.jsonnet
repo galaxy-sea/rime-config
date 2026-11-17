@@ -54,7 +54,7 @@ local letterBackground(kb, keys) =
     local bgName = kb[matches[0]].backgroundStyle;
     { name: bgName, style: get(kb, bgName) };
 
-// 回车、发送、空格及集合控件保留原有背景。
+// 回车保留随类型变化的条件样式，空格及集合控件保留原有背景。
 local protected(k, v) =
   local action = get(v, 'action');
   std.member(['enter', 'space'], action)
