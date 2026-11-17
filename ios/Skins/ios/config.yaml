@@ -1,0 +1,24 @@
+numeric:
+  pad:
+    floating: "numericPortrait"
+    landscape: "iPadNumericLandscape"
+    portrait: "iPadNumericPortrait"
+  phone:
+    landscape: "numericLandscape"
+    portrait: "numericPortrait"
+pinyin:
+  pad:
+    floating: "pinyinPortrait"
+    landscape: "iPadPinyinLandscape"
+    portrait: "iPadPinyinPortrait"
+  phone:
+    landscape: "pinyinLandscape"
+    portrait: "pinyinPortrait"
+symbolic:
+  pad:
+    floating: "symbolicPortrait"
+    landscape: "iPadPinyinLandscape"
+    portrait: "iPadPinyinPortrait"
+  phone:
+    landscape: "symbolicLandscape"
+    portrait: "symbolicPortrait"
