@@ -6,7 +6,7 @@
 
 ###
 ```shell
-  brew install jsonnet fswatch rclone
+  brew install go-jsonnet fswatch rclone
 ```
 
 

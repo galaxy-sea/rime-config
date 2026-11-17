@@ -126,20 +126,6 @@ local nativeCandidates(kb, color) =
         nativeCandidatesSpacer: { type: 'button' },
       };
 
-// 只去掉 S 的默认脚本快捷指令，不碰英文模式中的上划大写通知。
-local removeScriptSwipe(kb) = kb + {
-  [k]: {
-    [field]: kb[k][field]
-    for field in std.objectFields(kb[k])
-    if field != 'swipeUpAction'
-  }
-  for k in std.objectFields(kb)
-  if get(kb[k], 'swipeUpAction') == { shortcut: '#toggleScriptView' }
-  && std.member([
-    { character: 's' }, { symbol: 's' },
-  ], get(kb[k], 'action'))
-};
-
 // 独立英文模式：保留原生 Shift 定义，只替换布局中的 Shift 引用。
 local mode = 'programmer_english';
 local trigger = { rimeOption: mode };
@@ -292,7 +278,7 @@ local compileTheme(isDark) =
       local p = prepared[n];
       local kb = nativeCandidates(unifyButtons(p.keyboard, p.keys, backgrounds[sourceName[n]]), color);
       local final = if std.member(baseNames, n)
-                    then removeScriptSwipe(programmerEnglish(kb, p.keys, color, blue))
+                    then programmerEnglish(kb, p.keys, color, blue)
                     else kb;
       std.toString(final)
     for n in names

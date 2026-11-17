@@ -15,11 +15,9 @@ local Style = import 'Style.libsonnet';
 local Theme = import 'Theme.libsonnet';
 
 // 按键节点上允许出现的动作与布局 Key。不在表里的会被丢掉。
-// `split` 在这里透传：分体状态下的覆盖块，语义见 docs/键盘Split状态.md。
 local passthroughKeys = [
   'size',
   'bounds',
-  'split',
   'action',
   'uppercasedStateAction',
   'preeditStateAction',
@@ -160,3 +158,4 @@ local system(name, opts) = {
   labelOf: labelOf,
   paint: paint,
 }
+
