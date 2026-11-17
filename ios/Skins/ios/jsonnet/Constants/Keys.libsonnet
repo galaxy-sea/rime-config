@@ -9,10 +9,11 @@
 //
 // 本表只有数据，不 import 任何东西——哪颗键出现在哪一页由 Keyboards/ 下的布局决定。
 
-// 一颗普通字母键：点出小写，Shift 态出大写。
+// 一颗普通字母键：点出小写，上划或 Shift 态出大写。
 local letter(c) = {
   action: { character: c },
   uppercasedStateAction: { character: std.asciiUpper(c) },
+  swipeUpAction: { character: std.asciiUpper(c) },
 };
 
 // 一颗数字键：点出数字，上划出它头顶那个符号。

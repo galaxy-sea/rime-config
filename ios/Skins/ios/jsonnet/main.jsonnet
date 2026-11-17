@@ -225,7 +225,6 @@ local programmerEnglish(kb, keys, color, blue) =
           local ch = btn.action.character;
           note(btn, btn.foregroundStyle) + {
             action: { character: ch },
-            swipeUpAction: { character: std.asciiUpper(ch) },
           }
         for k in letters
       };
