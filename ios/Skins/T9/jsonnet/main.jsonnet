@@ -55,9 +55,6 @@ local config = {
   'config.yaml': std.manifestYamlDoc(config, indent_array_in_object=true, quote_keys=false),
 
   // 拼音键盘
-  // TODO: 这里用 std.toString 代替 std.manifestYamlDoc 是为了避免 jsonnet 在处理非常大的内容时耗时太严重
-  // 在 PC 上调试的时候可以使用，方便排查问题
-  // ['light/' + pinyinPortraitFileName + '.yaml']: std.manifestYamlDoc(lightPinyinPortraitFileContent, indent_array_in_object=false, quote_keys=false),
   ['light/' + portraitPinyinFileName + '.yaml']: std.toString(lightPortraitPinyinFileContent),
   ['dark/' + portraitPinyinFileName + '.yaml']: std.toString(darkPortraitPinyinFileContent),
   ['light/' + landscapePinyinFileName + '.yaml']: std.toString(lightLandscapePinyinFileContent),
