@@ -7,7 +7,7 @@ local Theme = import 'Theme.libsonnet';
 
 local candidateStyle = {
   highlightBackgroundColor: colors.candidateHighlightColor,
-  preferredBackgroundColor: colors.candidateHighlightColor,
+  preferredBackgroundColor: '#00000000',  // 首选候选词不单独显示底色
   preferredIndexColor: colors.candidateForegroundColor,
   preferredTextColor: colors.candidateForegroundColor,
   preferredCommentColor: colors.candidateForegroundColor,

@@ -128,6 +128,8 @@ local buttonBackground(insets, normalColor, highlightColor) = Style.geometry({
   } + {
     [returnIconName(i)]: Style.systemImage({
       systemImageName: returnKeyIcons[i],
+      // 按下时继续显示同一图标，避免客户端使用空的高亮图标。
+      highlightSystemImageName: returnKeyIcons[i],
       fontSize: 20,
       fontWeight: 'medium',
       normalColor: if i == 0 then colors.systemButtonForegroundColor else '#FFFFFF',

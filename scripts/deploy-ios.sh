@@ -9,12 +9,6 @@ RIME_DATA="$ROOT/ios/RimeUserData"
 
 START=$SECONDS
 
-# 先统一编译，再进行设备查找和文件同步；失败时由 set -e 停止部署。
-if [[ "${SKIP_BUILD:-0}" != "1" ]]; then
-    echo "正在编译皮肤..."
-    bash "$ROOT/scripts/compile-skin.sh"
-fi
-
 # 搜索设备
 printf '\n正在搜索设备...\n'
 
@@ -89,6 +83,12 @@ done <<< "$DEVICES"
 if [[ "$COUNT" -eq 0 ]]; then
     echo "没有找到安装元书的可用设备"
     exit 1
+fi
+
+# 确认目标设备后再编译；失败时停止同步。
+if [[ "${SKIP_BUILD:-0}" != "1" ]]; then
+    echo "正在编译皮肤..."
+    bash "$ROOT/scripts/compile-skin.sh"
 fi
 
 # 准备部署资源
