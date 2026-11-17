@@ -111,15 +111,16 @@ local nativeCandidates(kb, color) =
         },
         nativeCollapseColumn: { size: { width: 44 } },
         nativeCollapseButton: {
-          size: { height: '1/' + std.toString(rows) },
+          size: { height: kb.toolbarHeight },
           action: { shortcut: '#candidatesBarStateToggle' },
           foregroundStyle: 'nativeCollapseForeground',
         },
         nativeCollapseForeground: {
           buttonStyleType: 'systemImage',
           systemImageName: 'chevron.up',
-          fontSize: 17,
+          fontSize: 18,
           fontWeight: 'medium',
+          center: { x: 0.5, y: 0.5 },
           normalColor: color,
           highlightColor: color,
         },

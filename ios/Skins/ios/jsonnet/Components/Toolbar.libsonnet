@@ -19,7 +19,7 @@ local candidateStyle = {
   commentFontSize: fonts.candidateComment,
 };
 
-local iconButton(name, systemImageName, action, background=null, size={}) = {
+local iconButton(name, systemImageName, action, background=null, size={}, foreground={}) = {
   [name]: {
     action: action,
     foregroundStyle: name + 'ForegroundStyle',
@@ -30,7 +30,7 @@ local iconButton(name, systemImageName, action, background=null, size={}) = {
     normalColor: colors.toolbarButtonForegroundColor,
     highlightColor: colors.toolbarButtonHighlightedForegroundColor,
     fontSize: fonts.candidateStateButton,
-  }),
+  } + foreground),
 };
 
 local menuButtonName = 'toolbarMenuButton';
@@ -95,9 +95,12 @@ local backspaceName = 'verticalBackspaceButtonStyle';
       [lastRowName]: { size: { height: 45 } },
     },
     iconButton(menuButtonName, 'square.grid.2x2.fill', { shortcut: '#keyboardMenu' }, null, { width: 44 }),
-    iconButton(dismissButtonName, 'chevron.down', 'dismissKeyboard', null, { width: 44 }),
-    iconButton(expandName, 'chevron.forward', { shortcut: '#candidatesBarStateToggle' })
-    + { [expandName]+: { size: { width: 44 } } },
+    iconButton(dismissButtonName, 'chevron.down', 'dismissKeyboard', null, { width: 44 }, {
+      fontSize: 18, fontWeight: 'medium', center: { x: 0.5, y: 0.5 },
+    }),
+    iconButton(expandName, 'chevron.forward', { shortcut: '#candidatesBarStateToggle' }, null, { width: 44 }, {
+      fontSize: 18, fontWeight: 'medium', center: { x: 0.5, y: 0.5 },
+    }),
     iconButton(pageUpName, 'chevron.up', { shortcut: '#verticalCandidatesPageUp' }, Theme.systemBackgroundName),
     iconButton(pageDownName, 'chevron.down', { shortcut: '#verticalCandidatesPageDown' }, Theme.systemBackgroundName),
     iconButton(returnName, 'return', { shortcut: '#candidatesBarStateToggle' }, Theme.systemBackgroundName),
