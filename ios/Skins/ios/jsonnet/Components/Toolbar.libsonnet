@@ -94,7 +94,7 @@ local backspaceName = 'verticalBackspaceButtonStyle';
 
       [lastRowName]: { size: { height: 45 } },
     },
-    iconButton(menuButtonName, 'square.grid.2x2.fill', { shortcut: '#keyboardMenu' }, null, { width: 44 }),
+    iconButton(menuButtonName, 'command', { shortcut: '#keyboardMenu' }, null, { width: 44 }),
     iconButton(dismissButtonName, 'chevron.down', 'dismissKeyboard', null, { width: 44 }, {
       fontSize: 18, fontWeight: 'medium', center: { x: 0.5, y: 0.5 },
     }),

@@ -1,0 +1,8 @@
+candidateTextFontSize: 18
+audioFeedbackEnabled: false
+hapticFeedbackEnabled: true
+hapticLevel: medium
+hapticFeedbackIntensity: 0.7
+keyboardSkinName: ios
+embeddedInputModeEnabled: true
+displayCaret: false
