@@ -61,14 +61,7 @@ chmod +x scripts/deploy-ios.sh
 ./scripts/deploy-ios.sh
 ```
 
-### 5. 更新工具
 
-```bash
-# 更新工具
-uv tool upgrade pymobiledevice3
-# 卸载工具
-uv tool uninstall pymobiledevice3
-```
 
 ### 相关链接
 

@@ -102,7 +102,6 @@ local space(kb, isDark) =
       if isDark then '#8E8E93' else '#AEAEB2'),
   } + {
     [k]: kb[k] + {
-      // 直接读取当前 Option，避免错过 Lua 初始化时已经发出的通知。
       foregroundStyle: [
         {
           styleName: ['securityLockGenerating', 'securityTerminalGenerating'],
@@ -133,7 +132,6 @@ local space(kb, isDark) =
   };
 
 {
-  // 仅根据 RIME Option 切换文字与颜色，不包含计时或过渡动画。
-  // 切换时机取决于 RIME 初始化，可能要到首次输入时才触发。
+  // 根据当前 RIME Option 切换锁图标和文字，不包含过渡动画。
   apply(kb, isDark=false): space(toolbar(kb, isDark), isDark),
 }
