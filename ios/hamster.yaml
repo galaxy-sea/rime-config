@@ -2,7 +2,8 @@ candidateTextFontSize: 18
 audioFeedbackEnabled: false
 hapticFeedbackEnabled: true
 hapticLevel: medium
-hapticFeedbackIntensity: 0.7
-keyboardSkinName: ios
+hapticFeedbackIntensity: 0.4
+keyboardSkinName: iOS-QWERTY
 embeddedInputModeEnabled: true
 displayCaret: false
+isSyncRimeFileFromiCloud: false

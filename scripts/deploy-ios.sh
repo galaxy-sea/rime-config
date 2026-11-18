@@ -140,7 +140,7 @@ deploy_skin() {
     name="$(basename "$skin")"
     if ! pymobiledevice3 apps rm --documents --udid "$udid" \
         "$APP_ID" "/Documents/Skins/$name" >"$log" 2>&1; then
-        if ! rg -q 'OBJECT_NOT_FOUND|ObjectNotFound|No such file' "$log"; then
+        if ! grep -Eq 'OBJECT_NOT_FOUND|ObjectNotFound|No such file' "$log"; then
             cat "$log" >&2
             return 1
         fi

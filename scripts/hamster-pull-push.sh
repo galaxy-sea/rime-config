@@ -1,8 +1,18 @@
 #!/usr/bin/env bash
-# 从元书下载 hamster.yaml，不修改设备上的文件。
+# 在项目与元书之间下载或上传 hamster.yaml。
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 APP_ID="com.ihsiao.apps.Hamster3"
+MODE="${1:-pull}"
+if [[ $# -gt 1 || ( "$MODE" != pull && "$MODE" != push ) ]]; then
+    echo "用法: $0 [pull|push]（默认 pull）" >&2
+    exit 2
+fi
+LOCAL_FILE="$ROOT/ios/hamster.yaml"
+if [[ "$MODE" == push && ! -f "$LOCAL_FILE" ]]; then
+    echo "找不到本地文件：$LOCAL_FILE" >&2
+    exit 1
+fi
 for tool in pymobiledevice3 python3; do
     if ! command -v "$tool" >/dev/null 2>&1; then
         echo "缺少命令：$tool" >&2
@@ -88,11 +98,19 @@ fi
 
 # 多设备时避免将不同设备的配置写到同一个文件。
 if [[ "$COUNT" -gt 1 ]]; then
-    echo "发现多个目标设备，请通过 UDID 指定来源：" >&2
+    echo "发现多个目标设备，请通过 UDID 指定设备：" >&2
     for ((i = 0; i < COUNT; i++)); do
         printf '  %s  %s\n' "${TARGETS[$i]}" "${NAMES[$i]}" >&2
     done
     exit 1
+fi
+
+if [[ "$MODE" == push ]]; then
+    printf '\n正在上传 hamster.yaml 到：%s\n' "${NAMES[0]}"
+    pymobiledevice3 apps push --documents --udid "${TARGETS[0]}" \
+        "$APP_ID" "$LOCAL_FILE" "/Documents"
+    echo "上传完成：/Documents/hamster.yaml"
+    exit 0
 fi
 
 STAGE="$(mktemp -d)"
