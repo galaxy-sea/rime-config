@@ -1,4 +1,5 @@
 // 元书「极简」皮肤：在对象层完成所有修改，再一次性输出文件。
+local SecurityTerminal = import 'Components/SecurityTerminal.libsonnet';
 local Style = import 'Components/Style.libsonnet';
 local iPadNumeric = import 'Keyboards/iPadNumeric.libsonnet';
 local iPadPinyin = import 'Keyboards/iPadPinyin.libsonnet';
@@ -280,7 +281,7 @@ local compileTheme(isDark) =
       local final = if std.member(baseNames, n)
                     then programmerEnglish(kb, p.keys, color, blue)
                     else kb;
-      std.toString(final)
+      std.toString(SecurityTerminal.apply(final, isDark))
     for n in names
   };
 

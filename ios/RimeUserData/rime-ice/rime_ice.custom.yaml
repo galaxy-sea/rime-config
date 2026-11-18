@@ -5,6 +5,9 @@ patch:
 
   "engine/processors/@before 0": lua_processor@*programmer_english*processor
 
+  "engine/processors/+":
+    - lua_processor@*security_terminal
+
   "engine/segmentors/@before 0": lua_segmentor@*programmer_english*segmentor
 
   "engine/translators/@before 0": lua_translator@*programmer_english*translator

@@ -78,5 +78,17 @@ uv tool uninstall pymobiledevice3
 - [元书输入法](https://ihsiao.com/apps/hamster/v3/docs/)
 
 
-###
+# 无法实现的功能
+
+>ios/元书
+
+| 功能      | iOS / iPadOS 原生术语                            | 元书皮肤功能需求                         |
+| ------- | -------------------------------------------- | -------------------------------- |
+| 回车键动态状态 | `hasText`、`enablesReturnKeyAutomatically`    | 支持根据输入框内容及回车键可用状态，动态切换按键样式和启用状态  |
+| 删除键动态状态 | `documentContextBeforeInput`、`selectedText`  | 支持根据当前是否存在可删除内容，动态切换删除键样式        |
+| 空格键文字过渡 | Keyboard View Lifecycle、Transition Animation | 支持键盘显示时自动触发前景样式切换，以及延时、淡入淡出等过渡效果 |
+
+前两项可以归类为「输入框状态通知」，第三项可以归类为「键盘生命周期通知及过渡动画」。
+
+至于具体通过 `ConditionStyle`、`Notification` 还是 `Animation` 实现，可以由 Author 根据元书自身的架构决定。
 
