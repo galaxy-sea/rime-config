@@ -62,10 +62,28 @@ local toolbar(kb, isDark) =
         foregroundStyle: ['securityTerminalTitle', 'securityTerminalUnit'],
       },
       securityTerminalTitle: label('通信内容 · 严禁涉密',
-        if isDark then '#E5E5E7' else '#242426', 15, 'medium', 0.32),
+        if isDark then '#E5E5E7' else '#242426', 15, 'medium', 0.425),
       securityTerminalUnit: label('信安六局',
-        if isDark then '#98989D' else '#8E8E93', 10, 'regular', 0.75),
+        if isDark then '#98989D' else '#8E8E93', 10, 'regular', 0.775),
     };
+
+local lockIcon(color) = {
+  buttonStyleType: 'systemImage',
+  systemImageName: 'lock.fill',
+  highlightSystemImageName: 'lock.fill',
+  fontSize: 11,
+  // 五个 12pt 汉字约 60pt，锁约 8pt，间隔 3pt。
+  // 两层共同以按钮中心为基准：图标左移 31.5pt，文字右移 5.5pt。
+  center: { x: 0.5, y: 0.5 },
+  insets: { left: 0, right: 63, top: 0, bottom: 0 },
+  normalColor: color,
+  highlightColor: color,
+};
+
+local securityText(text, color) = label(text, color, 12) {
+  center: { x: 0.5, y: 0.5 },
+  insets: { left: 11, right: 0, top: 0, bottom: 0 },
+};
 
 local space(kb, isDark) =
   local keys = std.set(cells(get(kb, 'keyboardLayout', [])));
@@ -75,20 +93,24 @@ local space(kb, isDark) =
   ];
   if std.length(spaces) == 0 then kb
   else kb + {
-    securityTerminalGenerating: label('🔒 密钥生成中',
-      Style.resolve(colors.standardButtonForegroundColor, isDark), 12),
-    securityTerminalReady: label('🔒 数据已加密',
-      if isDark then '#8E8E93' else '#AEAEB2', 12),
+    securityLockGenerating: lockIcon(
+      Style.resolve(colors.standardButtonForegroundColor, isDark)),
+    securityTerminalGenerating: securityText('密钥生成中',
+      Style.resolve(colors.standardButtonForegroundColor, isDark)),
+    securityLockReady: lockIcon(if isDark then '#8E8E93' else '#AEAEB2'),
+    securityTerminalReady: securityText('数据已加密',
+      if isDark then '#8E8E93' else '#AEAEB2'),
   } + {
     [k]: kb[k] + {
+      // 直接读取当前 Option，避免错过 Lua 初始化时已经发出的通知。
       foregroundStyle: [
         {
-          styleName: 'securityTerminalGenerating',
+          styleName: ['securityLockGenerating', 'securityTerminalGenerating'],
           conditionKey: 'rime$security_terminal_ready',
           conditionValue: false,
         },
         {
-          styleName: 'securityTerminalReady',
+          styleName: ['securityLockReady', 'securityTerminalReady'],
           conditionKey: 'rime$security_terminal_ready',
           conditionValue: true,
         },
@@ -104,7 +126,7 @@ local space(kb, isDark) =
       rimeNotificationType: 'optionChanged',
       rimeOptionName: 'security_terminal_ready',
       rimeOptionValue: true,
-      foregroundStyle: 'securityTerminalReady',
+      foregroundStyle: ['securityLockReady', 'securityTerminalReady'],
       [if get(kb[k], 'backgroundStyle') != null then 'backgroundStyle']: kb[k].backgroundStyle,
     }
     for k in spaces
