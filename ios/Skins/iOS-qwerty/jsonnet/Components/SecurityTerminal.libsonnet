@@ -63,7 +63,7 @@ local toolbar(kb, isDark) =
       },
       securityTerminalTitle: label('通信内容 · 严禁涉密',
         if isDark then '#E5E5E7' else '#242426', 15, 'medium', 0.425),
-      securityTerminalUnit: label('信安六局',
+      securityTerminalUnit: label('信安六局 · 浙瓯闽鹭',
         if isDark then '#98989D' else '#8E8E93', 10, 'regular', 0.775),
     };
 
@@ -95,10 +95,18 @@ local space(kb, isDark) =
   else kb + {
     securityLockGenerating: lockIcon(
       Style.resolve(colors.standardButtonForegroundColor, isDark)),
-    securityTerminalGenerating: securityText('密钥生成中',
+    securityTerminalGenerating: securityText('密钥协商中',
       Style.resolve(colors.standardButtonForegroundColor, isDark)),
+    securityTerminalEncrypting: securityText('明文加密中',
+      if isDark then '#8E8E93' else '#AEAEB2'),
+    // 复用已有预编辑通知，只替换前景，保留其背景及其他配置。
+    preeditChangedForSpaceButtonNotification:
+      get(kb, 'preeditChangedForSpaceButtonNotification', {}) + {
+        notificationType: 'preeditChanged',
+        foregroundStyle: ['securityLockReady', 'securityTerminalEncrypting'],
+      },
     securityLockReady: lockIcon(if isDark then '#8E8E93' else '#AEAEB2'),
-    securityTerminalReady: securityText('数据已加密',
+    securityTerminalReady: securityText('会话已加密',
       if isDark then '#8E8E93' else '#AEAEB2'),
   } + {
     [k]: kb[k] + {
