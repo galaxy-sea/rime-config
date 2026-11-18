@@ -6,7 +6,7 @@
 ```
 rime-dotfiles/
 ├── shared/       # 雾凇拼音、词库、Lua 脚本
-├── macos/        # 鼠须管
+├── macos/        # Fcitx5 macOS
 ├── ios/          # 元书（iPhone、iPad）
 ├── android/      # 同文输入法
 ├── scripts/      # 编译、同步、部署脚本

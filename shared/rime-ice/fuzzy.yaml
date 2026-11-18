@@ -1,0 +1,27 @@
+algebra:
+  # 平翘舌
+  - derive/^([zcs])h/$1/
+  - derive/^([zcs])([^h])/$1h$2/
+
+  # an ↔ ang
+  - derive/an$/ang/
+  - derive/ang$/an/
+
+  # en ↔ eng
+  - derive/en$/eng/
+  - derive/eng$/en/
+
+  # in ↔ ing
+  - derive/in$/ing/
+  - derive/ing$/in/
+
+  # ian ↔ iang
+  - derive/ian$/iang/
+  - derive/iang$/ian/
+
+  # uan ↔ uang
+  - derive/uan$/uang/
+  - derive/uang$/uan/
+
+  # ong → on
+  - derive/ong$/on/

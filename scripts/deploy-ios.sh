@@ -88,7 +88,7 @@ fi
 # 确认目标设备后再编译；失败时停止同步。
 if [[ "${SKIP_BUILD:-0}" != "1" ]]; then
     echo "正在编译皮肤..."
-    bash "$ROOT/scripts/compile-skin.sh"
+    bash "$ROOT/scripts/compile-ios.sh"
 fi
 
 # 准备部署资源
@@ -121,9 +121,15 @@ if [[ "$SKIN_COUNT" -eq 0 ]]; then
     exit 1
 fi
 
-# 配置也先暂存，统一排除 Finder 元数据，不修改本地源目录。
-if [[ -d "$RIME_DATA" ]]; then
-    cp -R "$RIME_DATA" "$STAGE/RimeUserData"
+# 先合并共享配置，再覆盖 iOS 专属配置；仅在暂存目录操作。
+if [[ -d "$ROOT/shared" || -d "$RIME_DATA" ]]; then
+    mkdir -p "$STAGE/RimeUserData"
+    if [[ -d "$ROOT/shared" ]]; then
+        cp -R "$ROOT/shared/." "$STAGE/RimeUserData/"
+    fi
+    if [[ -d "$RIME_DATA" ]]; then
+        cp -R "$RIME_DATA/." "$STAGE/RimeUserData/"
+    fi
     RIME_DATA="$STAGE/RimeUserData"
 fi
 find "$STAGE" -type f -iname '.DS_Store' -delete
