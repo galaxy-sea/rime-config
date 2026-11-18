@@ -1,5 +1,5 @@
 // 临时状态探针：红色=false，绿色=true；未匹配时的显示由客户端决定。
-// 编译：jsonnet -S -m ios/Skins/ios ios/Skins/ios/jsonnet/test-main.jsonnet
+// 编译：jsonnet -S -m ios/Skins/iOS-QWERTY ios/Skins/iOS-QWERTY/jsonnet/test-main.jsonnet
 // 恢复普通主题：./scripts/compile-skin.sh
 local path = 'light/pinyinPortrait.yaml';
 local kb = std.parseJson((import 'main.jsonnet')[path]);
