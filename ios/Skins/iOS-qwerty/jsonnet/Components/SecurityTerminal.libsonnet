@@ -67,12 +67,12 @@ local toolbar(kb, isDark) =
         if isDark then '#98989D' else '#8E8E93', 10, 'regular', 0.775),
     };
 
-local lockIcon(color) = {
+local securityIcon(symbol, color) = {
   buttonStyleType: 'systemImage',
-  systemImageName: 'lock.fill',
-  highlightSystemImageName: 'lock.fill',
+  systemImageName: symbol,
+  highlightSystemImageName: symbol,
   fontSize: 11,
-  // 五个 12pt 汉字约 60pt，锁约 8pt，间隔 3pt。
+  // 图标与五字状态文本组合显示，保持固定内边距。
   // 两层共同以按钮中心为基准：图标左移 31.5pt，文字右移 5.5pt。
   center: { x: 0.5, y: 0.5 },
   insets: { left: 0, right: 63, top: 0, bottom: 0 },
@@ -93,19 +93,21 @@ local space(kb, isDark) =
   ];
   if std.length(spaces) == 0 then kb
   else kb + {
-    securityLockGenerating: lockIcon(
+    securityLockGenerating: securityIcon('link.icloud.fill',
       Style.resolve(colors.standardButtonForegroundColor, isDark)),
     securityTerminalGenerating: securityText('密钥协商中',
       Style.resolve(colors.standardButtonForegroundColor, isDark)),
+    securityLockEncrypting: securityIcon('key.icloud.fill',
+      if isDark then '#8E8E93' else '#AEAEB2'),
     securityTerminalEncrypting: securityText('明文加密中',
       if isDark then '#8E8E93' else '#AEAEB2'),
     // 复用已有预编辑通知，只替换前景，保留其背景及其他配置。
     preeditChangedForSpaceButtonNotification:
       get(kb, 'preeditChangedForSpaceButtonNotification', {}) + {
         notificationType: 'preeditChanged',
-        foregroundStyle: ['securityLockReady', 'securityTerminalEncrypting'],
+        foregroundStyle: ['securityLockEncrypting', 'securityTerminalEncrypting'],
       },
-    securityLockReady: lockIcon(if isDark then '#8E8E93' else '#AEAEB2'),
+    securityLockReady: securityIcon('lock.icloud.fill',if isDark then '#8E8E93' else '#AEAEB2'),
     securityTerminalReady: securityText('会话已加密',
       if isDark then '#8E8E93' else '#AEAEB2'),
   } + {
