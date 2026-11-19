@@ -25,3 +25,6 @@ algebra:
 
   # ong → on
   - derive/ong$/on/
+
+  # 修复全拼与简拼混输冲突
+  - erase/^[zcs][aeiu]h$/
