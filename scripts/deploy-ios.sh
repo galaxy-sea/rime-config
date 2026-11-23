@@ -145,7 +145,7 @@ if [[ -d "$ROOT/shared" || -d "$RIME_DATA" ]]; then
 fi
 find "$STAGE" -type f -iname '.DS_Store' -delete
 # 私人短语密文仅用于仓库存储，不上传到输入法。
-rm -f "$STAGE/RimeUserData/rime-ice/custom_phrase.txt.gpg"
+rm -f "$STAGE/RimeUserData/rime-ice/custom_phrase.txt.gpg" "$STAGE/RimeUserData/rime-ice/custom_phrase.txt.sha256"
 
 :
 

@@ -91,7 +91,6 @@ fi
 cp "${FILES[@]}" "$RIME_DIR/"
 
 :
-bash "$ROOT/scripts/init-mac-sync.sh" > /dev/null
 mkdir -p "$(dirname "$CSS_TARGET")" "$(dirname "$WEBPANEL_CONFIG")"
 cp "$CSS_SOURCE" "$CSS_TARGET"
 python3 - "$WEBPANEL_CONFIG" <<'PYCONFIG'

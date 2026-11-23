@@ -23,8 +23,9 @@
     --dark-label-color: var(--pinyin-label) !important;
 }
 
-/* 深色应用：根据当前应用外观自动切换 */
-#fcitx-theme[data-fcitx-app-dark="true"] {
+/* 深色应用自动切换；VS Code 使用独立编辑器主题，按应用指定深色。 */
+#fcitx-theme[data-fcitx-app-dark="true"],
+#fcitx-theme[data-fcitx-app-id="com.microsoft.VSCode"] {
     color-scheme: dark !important;
 
     --pinyin-text: #f5f5f5;
