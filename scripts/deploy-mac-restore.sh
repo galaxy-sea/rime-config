@@ -3,10 +3,10 @@
 set -euo pipefail
 ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 RIME_DIR="$HOME/.local/share/fcitx5/rime"
-FCITX_CURL="/Library/Input Methods/Fcitx5.app/Contents/bin/fcitx5-curl"
+FCITX_APP="/Library/Input Methods/Fcitx5.app"
 source "$ROOT/scripts/lib/mac-backup.sh"
 
-[[ -x "$FCITX_CURL" ]] || { echo "找不到 Fcitx5 部署工具" >&2; exit 1; }
+[[ -d "$FCITX_APP" ]] || { echo "找不到 Fcitx5：$FCITX_APP" >&2; exit 1; }
 shopt -s nullglob
 BACKUPS=()
 for backup in "$ROOT"/backups/mac/*; do
@@ -48,6 +48,9 @@ backup_mac_rime
 mkdir -p "$RIME_DIR"
 # 完整还原，移除所选版本中不存在的文件。
 rsync -a --delete "$chosen/rime/" "$RIME_DIR/"
-printf '\n正在重新部署 Fcitx5-Rime...\n'
-"$FCITX_CURL" /config/addon/rime/deploy -X POST -d '{}'
+printf '\n正在重启 Fcitx5...\n'
+# 未运行时 pkill 返回 1，仍继续启动；其他错误停止。
+pkill -x Fcitx5 || [[ $? -eq 1 ]]
+sleep 1
+open -a "$FCITX_APP"
 echo "还原完成"

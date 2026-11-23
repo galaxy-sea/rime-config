@@ -12,6 +12,7 @@ backup_mac_rime() {
         echo "备份失败，未执行覆盖：$backup_dir" >&2
         return 1
     fi
+    MAC_BACKUP_DIR="$backup_dir"
     touch "$backup_dir/.complete"
     printf '完整备份已保存：%s\n' "$backup_dir"
 }

@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>macOS Liquid Glass 材质实验室</title>
+  <style>
+    :root { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif; color: #1d1d1f; background: #f5f5f7; }
+    * { box-sizing: border-box; }
+    body { margin: 0; }
+    main { max-width: 1200px; margin: 0 auto; padding: 28px 32px 36px; }
+    header { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; margin-bottom: 24px; }
+    h1 { font-size: 25px; letter-spacing: -.5px; margin: 0 0 6px; font-weight: 650; }
+    header p, .description { margin: 0; color: #68686d; font-size: 14px; line-height: 1.5; }
+    .status { font-size: 12px; font-weight: 600; padding: 7px 10px; border-radius: 8px; background: #fce8da; color: #8e4b20; max-width: 270px; }
+    .status.supported { background: #dcefe1; color: #236b38; }
+    .toolbar { display: flex; gap: 16px; flex-wrap: wrap; align-items: end; padding: 16px; background: white; border: 1px solid #e3e3e7; border-radius: 13px; margin-bottom: 22px; }
+    label { display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600; color: #55555a; min-width: 120px; }
+    label.material-label { flex: 2 1 270px; }
+    #vibrancy-control { border: 0; padding: 0; margin: 0; min-width: 0; flex: 1 1 100%; }
+    #vibrancy-control legend { font-size: 13px; margin-bottom: 8px; }
+    .material-options { display: flex; flex-wrap: wrap; gap: 8px 16px; }
+    .material-options label { display: inline-flex; align-items: center; gap: 5px; font-size: 13px; cursor: pointer; font-weight: normal; }
+    label.scheme-label { flex: 1 1 150px; }
+    select { width: 100%; color: #222; background: #f8f8fa; border: 1px solid #dedee3; border-radius: 7px; font: inherit; font-size: 14px; padding: 9px 11px; }
+    input[type=range] { width: 100%; accent-color: #007aff; }
+    .stripe-label { flex: 1 1 160px; }
+    .section-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin: 16px 0 9px; }
+    h2 { margin: 0; font-size: 17px; font-weight: 650; }
+    .section-head span { font-size: 12px; color: #74747a; }
+    .test-area { position: relative; min-height: 218px; height: min(30vh, 310px); display: grid; place-items: center; border-radius: 12px; overflow: hidden; border: 1px solid #c8c8cc; }
+    .split { background: linear-gradient(90deg, #000 0 50%, #fff 50% 100%); }
+    .stripes { --stripe: 22px; background: repeating-linear-gradient(90deg, #000 0 var(--stripe), #fff var(--stripe) calc(2 * var(--stripe))); }
+    .candidate-bar { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 3px; border: 0.5px solid rgb(120 120 128 / 45%); border-radius: 999px; background: transparent; box-shadow: none; color-scheme: light dark; color: light-dark(#202020, #f6f6f6); white-space: nowrap; max-width: calc(100% - 24px); width: max-content; font-size: 16px; }
+    .test-area > .candidate-bar { cursor: grab; touch-action: none; user-select: none; }
+    .test-area > .candidate-bar.dragging { cursor: grabbing; }
+    .candidate { display: flex; align-items: center; gap: 5px; padding: 3px 8px; height: 27px; border-radius: 999px; font-weight: 500; }
+    .candidate.selected { background: #007aff; color: white; }
+    .candidate span { font-size: 11px; color: light-dark(#777, #a6a6a6); font-weight: 500; }
+    .candidate.selected span { color: white; }
+    .chevron { display: grid; place-items: center; width: 26px; margin-right: 2px; }
+    .chevron svg { width: 13px; height: 13px; }
+    .declaration { margin-top: 15px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; background: #e9e9ed; border-radius: 8px; padding: 11px 13px; }
+    code { font-size: 12px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; overflow-wrap: anywhere; }
+    button { border: 1px solid #d1d1d6; border-radius: 7px; background: #fff; font: inherit; font-size: 13px; padding: 6px 12px; cursor: pointer; color: #222; }
+    .foot { color: #74747a; font-size: 12px; line-height: 1.6; margin: 12px 1px 0; }
+    main { max-width: 1440px; padding: 20px 24px 28px; }
+    header { margin-bottom: 15px; }
+    .toolbar { padding: 11px 14px; margin-bottom: 14px; }
+    .comparison { display: grid; grid-template-columns: 150px repeat(3, minmax(0, 1fr)); gap: 7px 9px; }
+    .column-head { text-align: center; color: #74747a; font-size: 12px; font-weight: 600; padding: 4px 0; }
+    .group { grid-column: 1/-1; color: #65656b; font-size: 13px; font-weight: 650; border-bottom: 1px solid #dddde1; padding: 5px 0; margin-top: 5px; }
+    .material-name { align-self: center; text-align: left; border: 0; background: transparent; padding: 5px 2px; overflow-wrap: anywhere; }
+    .material-name strong { display: block; font-size: 13px; }
+    .material-name small { display: block; font-size: 11px; color: #888; margin-top: 3px; }
+    .material-name small.supported { color: #236b38; }
+    .material-name:hover strong { color: #007aff; }
+    .test-area { min-height: 70px; height: auto; padding: 6px; border-radius: 7px; }
+    .stripes { --stripe: var(--stripe-width, 22px); }
+    .checker {
+      --cell: var(--stripe-width, 22px);
+      background: conic-gradient(#000 0 25%, #fff 0 50%, #000 0 75%, #fff 0 100%) 0 0 / calc(var(--cell) * 2) calc(var(--cell) * 2);
+    }
+    .candidate-bar { width: 88%; max-width: 340px; height: 32px; padding: 0; border: none; border-radius: 999px; box-shadow: none; background: transparent; }
+    .test-area { min-height: 48px; }
+    .material-name { grid-row: span 2; }
+    .material-pair-end { margin-bottom: 8px; }
+    .candidate-bar { color: light-dark(#000, #fff); font-size: 14px; font-weight: 500; gap: 0; }
+    .candidate-bar > span { flex: 1; min-width: 0; text-align: center; }
+    .vibrancy-base { position: relative; }
+    .vibrancy-base > .candidate-bar { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; }
+    @media(max-width: 910px) { main { padding: 15px 14px; } .comparison { grid-template-columns: 125px repeat(3, minmax(0, 1fr)); } }
+    @media(max-width: 660px) { header { flex-direction: column; } .comparison { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px; } .column-head:first-child { display: none; } .material-name { grid-column: 1/-1; grid-row: auto; } .candidate-bar { font-size: 11px; } }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <div><h1>Liquid Glass · 全效果对照</h1><p>19 种效果，每种两行：上方无文字，下方有文字。</p></div>
+    <div class="status" id="status" role="status">正在检测 WebKit 能力…</div>
+  </header>
+  <div class="toolbar">
+    <label class="scheme-label">材质外观
+      <select id="scheme"><option value="light dark">自动 · 系统</option><option value="light">浅色</option><option value="dark">深色</option></select>
+    </label>
+    <label class="stripe-label">条纹 / 棋盘格宽度 <output id="stripe-value">22 px</output>
+      <input id="stripe-width" type="range" min="4" max="72" step="2" value="22">
+    </label>
+  </div>
+  <div class="comparison" id="comparison">
+    <div class="column-head">材质 · 点击复制 CSS</div>
+    <div class="column-head">大面积黑白分界</div>
+    <div class="column-head">密集黑白条纹</div>
+    <div class="column-head">黑白棋盘格</div>
+  </div>
+  <fieldset id="vibrancy-control"><legend>底层材质</legend><div id="base-material" class="material-options"></div></fieldset>
+  <div class="declaration"><code id="declaration"></code><button type="button" id="copy">复制 CSS</button></div>
+  <p class="foot">两行的尺寸、材质与背景完全一致，仅文字有无不同；均不添加填充色、边框或阴影。Vibrancy 默认不叠加底层材质，可使用 Vibrancy 分组标题旁的选择器同时为两行叠加玻璃。横条可按住拖动，双击恢复居中。CSS.supports 仅表示属性可解析，并不保证实际渲染效果。</p>
+  <section class="live-comparison">
+    <h2>系统输入法对照</h2>
+    <p class="foot" id="live-settings"></p>
+    <input id="ime-test" type="text" placeholder="点击这里输入拼音，调出系统候选栏进行对比" autocomplete="off" style="width:100%;padding:12px;margin:12px 0;font:inherit;">
+    <div class="test-area split" id="live-area" style="height:360px;">
+      <div class="candidate-bar" id="live-base"><div class="candidate-bar" id="live-content"><span>简体拼音</span><span>小企鹅</span></div></div>
+    </div>
+    <p class="foot">跟随上方材质选择实时生成，可拖动横条与系统候选栏对照；双击恢复居中。</p>
+    <pre style="white-space:pre-wrap;overflow-wrap:anywhere;"><code id="live-css"></code></pre>
+  </section>
+</main>
+<script>
+  const vibrancy = [
+    ['Primary Label', '-apple-system-vibrancy-label'],
+    ['Secondary Label', '-apple-system-vibrancy-secondary-label'],
+    ['Tertiary Label', '-apple-system-vibrancy-tertiary-label'],
+    ['Quaternary Label', '-apple-system-vibrancy-quaternary-label'],
+    ['Primary Fill', '-apple-system-vibrancy-fill'],
+    ['Secondary Fill', '-apple-system-vibrancy-secondary-fill'],
+    ['Tertiary Fill', '-apple-system-vibrancy-tertiary-fill'],
+    ['Separator', '-apple-system-vibrancy-separator'],
+  ];
+  const groups = [
+    ['Liquid Glass · 液态玻璃', [
+      ['Regular · 标准', '-apple-system-glass-material'],
+      ['Clear · 清透', '-apple-system-glass-material-clear'],
+      ['Subdued · 柔和', '-apple-system-glass-material-subdued'],
+      ['Media Controls', '-apple-system-glass-material-media-controls'],
+      ['Media Subdued', '-apple-system-glass-material-media-controls-subdued'],
+    ]],
+    ['Blur · 传统毛玻璃', [
+      ['Ultra Thin', '-apple-system-blur-material-ultra-thin'],
+      ['Thin', '-apple-system-blur-material-thin'],
+      ['Regular Blur', '-apple-system-blur-material'],
+      ['Thick', '-apple-system-blur-material-thick'],
+      ['Chrome', '-apple-system-blur-material-chrome'],
+    ]],
+    ['Vibrancy · 色彩融合', vibrancy],
+    ['Baseline · 对照组', [['None · 无材质', 'none']]],
+  ];
+  const comparison = document.querySelector('#comparison');
+  const baseMaterial = document.querySelector('#base-material');
+  const scheme = document.querySelector('#scheme');
+  const stripe = document.querySelector('#stripe-width');
+  const bars = [];
+  const vibrancyBases = [];
+  const status = document.querySelector('#status');
+  const declaration = document.querySelector('#declaration');
+  const copy = document.querySelector('#copy');
+  const property = '-apple-visual-effect';
+  let selected = '-apple-system-glass-material-subdued';
+  let selectedVibrancy = false;
+  let total = 0, supported = 0;
+  let selectedBase = 'none';
+  for (const [name, value] of [...groups[0][1], ...groups[1][1], ...groups[3][1]]) {
+    const label = document.createElement('label');
+    const input = document.createElement('input');
+    input.type = 'radio';
+    input.name = 'vibrancy-base-material';
+    input.value = value;
+    input.checked = value === selectedBase;
+    label.append(input, document.createTextNode(name));
+    baseMaterial.append(label);
+  }
+  function enableDrag(bar, area) {
+    let x = 0, y = 0, drag = null;
+    bar.addEventListener('pointerdown', event => {
+      if (!event.isPrimary || event.button !== 0) return;
+      event.preventDefault();
+      drag = { id: event.pointerId, clientX: event.clientX, clientY: event.clientY, x, y };
+      bar.setPointerCapture(event.pointerId);
+      bar.classList.add('dragging');
+    });
+    bar.addEventListener('pointermove', event => {
+      if (!drag || event.pointerId !== drag.id) return;
+      const maxX = Math.max(0, (area.clientWidth - bar.offsetWidth) / 2);
+      const maxY = Math.max(0, (area.clientHeight - bar.offsetHeight) / 2);
+      x = Math.max(-maxX, Math.min(maxX, drag.x + event.clientX - drag.clientX));
+      y = Math.max(-maxY, Math.min(maxY, drag.y + event.clientY - drag.clientY));
+      bar.style.transform = `translate(${x}px, ${y}px)`;
+    });
+    const stop = () => { drag = null; bar.classList.remove('dragging'); };
+    bar.addEventListener('pointerup', stop);
+    bar.addEventListener('pointercancel', stop);
+    bar.addEventListener('lostpointercapture', stop);
+    bar.addEventListener('dblclick', () => {
+      x = y = 0;
+      bar.style.transform = '';
+    });
+  }
+
+  function renderRows(target, rowGroups) {
+   for (const [group, materials] of rowGroups) {
+    const groupTitle = document.createElement('div');
+    groupTitle.className = 'group'; groupTitle.textContent = group; target.append(groupTitle);
+    if (group.startsWith('Vibrancy')) {
+      groupTitle.style.display = 'flex';
+      groupTitle.style.alignItems = 'center';
+      groupTitle.style.gap = '16px';
+      groupTitle.style.flexWrap = 'wrap';
+      groupTitle.append(document.querySelector('#vibrancy-control'));
+    }
+    for (const [name, value] of materials) {
+      const available = CSS.supports(property, value);
+      const isVibrancy = value.startsWith('-apple-system-vibrancy-');
+      if (value !== 'none') { total++; if (available) supported++; }
+      const label = document.createElement('button');
+      label.type = 'button'; label.className = 'material-name'; label.title = value;
+      const title = document.createElement('strong'); title.textContent = name;
+      const check = document.createElement('small');
+      check.textContent = value === 'none' ? '透明对照' : available ? '● 可解析' : '○ 不支持';
+      check.classList.toggle('supported', value !== 'none' && available);
+      label.append(title, check);
+      label.addEventListener('click', () => { selected = value; selectedVibrancy = isVibrancy; update(); copy.click(); });
+      target.append(label);
+      for (const hasText of [false, true]) {
+       for (const background of ['split', 'stripes', 'checker']) {
+        const area = document.createElement('div'); area.className = `test-area ${background}${hasText ? ' material-pair-end' : ''}`;
+        area.setAttribute('aria-label', `${name} · ${background} · ${hasText ? '有文字' : '无文字'}`);
+        const bar = document.createElement('div'); bar.className = 'candidate-bar';
+        bar.style.setProperty(property, value);
+        if (hasText) {
+          for (const text of ['简体拼音', '小企鹅']) {
+            const span = document.createElement('span'); span.textContent = text; bar.append(span);
+          }
+        }
+        if (isVibrancy) {
+          const base = document.createElement('div'); base.className = 'candidate-bar vibrancy-base';
+          base.style.setProperty(property, selectedBase);
+          vibrancyBases.push(base); bars.push(base); base.append(bar); area.append(base);
+        } else {
+          area.append(bar);
+        }
+        enableDrag(area.firstElementChild, area);
+        bars.push(bar); target.append(area);
+       }
+      }
+    }
+   }
+  }
+  renderRows(comparison, groups);
+  status.textContent = `${supported}/${total} 个材质可解析`;
+  status.classList.toggle('supported', supported > 0);
+  const liveBase = document.querySelector('#live-base');
+  const liveContent = document.querySelector('#live-content');
+  enableDrag(liveBase, document.querySelector('#live-area'));
+  function update() {
+    for (const bar of bars) bar.style.colorScheme = scheme.value;
+    for (const bar of vibrancyBases) bar.style.setProperty(property, selectedBase);
+    declaration.textContent = selectedVibrancy && selectedBase !== 'none'
+      ? `.glass { ${property}: ${selectedBase}; color-scheme: ${scheme.value}; } .content { ${property}: ${selected}; }`
+      : `${property}: ${selected}; color-scheme: ${scheme.value};`;
+    const baseEffect = selectedVibrancy ? selectedBase : selected;
+    liveBase.style.setProperty(property, baseEffect);
+    liveBase.style.colorScheme = scheme.value;
+    liveContent.style.setProperty(property, selectedVibrancy ? selected : 'none');
+    liveContent.style.border = '0';
+    liveContent.style.padding = '0';
+    liveContent.style.maxWidth = 'none';
+    liveContent.style.colorScheme = scheme.value;
+    document.querySelector('#live-settings').textContent =
+      `材质外观：${scheme.options[scheme.selectedIndex].text} ｜ 当前效果：${selected} ｜ 底层材质：${selectedBase}`;
+    document.querySelector('#live-css').textContent = declaration.textContent;
+  }
+  function updateStripes() {
+    document.documentElement.style.setProperty('--stripe-width', `${stripe.value}px`);
+    document.querySelector('#stripe-value').textContent = `${stripe.value} px`;
+  }
+  scheme.addEventListener('change', update);
+  baseMaterial.addEventListener('change', event => {
+    if (!event.target.matches('input[type=radio]')) return;
+    selectedBase = event.target.value;
+    update();
+  });
+  stripe.addEventListener('input', updateStripes);
+  copy.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(declaration.textContent);
+    } catch {
+      const selection = window.getSelection();
+      const range = document.createRange();
+      range.selectNodeContents(declaration);
+      selection.removeAllRanges(); selection.addRange(range);
+      if (!document.execCommand('copy')) { copy.textContent = '已选中，请复制'; return; }
+    }
+    copy.textContent = '已复制';
+    setTimeout(() => { copy.textContent = '复制 CSS'; }, 1200);
+  });
+  update(); updateStripes();
+</script>
+</body>
+</html>
