@@ -1,85 +1,85 @@
-/* 浅色应用 */
-#fcitx-theme {
-    color-scheme: light !important;
-
-    --pinyin-text: #202020;
-    --pinyin-label: #808080;
-
-    /* 滚动条颜色及上下留白 */
-    --pinyin-scrollbar-track: rgb(0 0 0 / 6%);
-    --pinyin-scrollbar-thumb: rgb(0 0 0 / 28%);
-    --pinyin-scrollbar-hover: rgb(0 0 0 / 40%);
-    --pinyin-scrollbar-inset: var(--border-radius, 15px);
-
-    /* 动画 */
-    --color-transition-duration: 80ms !important;
-    --scroll-animation: max-block-size 180ms ease-out !important;
-
-    /* 官方颜色变量 */
-    --light-text-color: var(--pinyin-text) !important;
-    --dark-text-color: var(--pinyin-text) !important;
-
-    --light-label-color: var(--pinyin-label) !important;
-    --dark-label-color: var(--pinyin-label) !important;
-}
-
-/* 深色应用自动切换；VS Code 使用独立编辑器主题，按应用指定深色。 */
-#fcitx-theme[data-fcitx-app-dark="true"],
-#fcitx-theme[data-fcitx-app-id="com.microsoft.VSCode"] {
-    color-scheme: dark !important;
-
-    --pinyin-text: #f5f5f5;
-    --pinyin-label: #a0a0a0;
-
-    --pinyin-scrollbar-track: rgb(255 255 255 / 5%);
-    --pinyin-scrollbar-thumb: rgb(255 255 255 / 25%);
-    --pinyin-scrollbar-hover: rgb(255 255 255 / 35%);
-}
-
-/* 取消官方 25px 偏移 */
-#fcitx-theme .fcitx-decoration {
-    transform: none !important;
-}
-
-/* 普通横向模式：候选词宽度 */
-#fcitx-theme .fcitx-horizontal:not(.fcitx-horizontal-scroll) .fcitx-candidate {
-    min-inline-size: var(--cell-width, 65px) !important;
-}
-
-#fcitx-theme .fcitx-horizontal:not(.fcitx-horizontal-scroll) .fcitx-candidate-inner {
-    margin-inline: var(--margin, 2px) !important;
-    flex-grow: 1;
-}
-
-/* 卷轴模式：右侧空间 */
-#fcitx-theme .fcitx-panel:has(.fcitx-horizontal-scroll) {
-    --scrollbar-width: 12px !important;
-    --scrollbar-redundancy-width:
-        calc(29px - var(--scrollbar-width)) !important;
-}
-
-/* 卷轴滚动条轨道 */
-#fcitx-theme .fcitx-scroll-area::-webkit-scrollbar-track {
-    background-color: var(--pinyin-scrollbar-track) !important;
-    border-radius: 6px !important;
-
-    margin-top: var(--pinyin-scrollbar-inset) !important;
-    margin-bottom: var(--pinyin-scrollbar-inset) !important;
-}
-
-/* 卷轴滚动条滑块 */
-#fcitx-theme .fcitx-scroll-area::-webkit-scrollbar-thumb {
-    background-color: var(--pinyin-scrollbar-thumb) !important;
-    border-radius: 6px !important;
-}
-
-#fcitx-theme .fcitx-scroll-area::-webkit-scrollbar-thumb:hover {
-    background-color: var(--pinyin-scrollbar-hover) !important;
-}
-
-/* 液态玻璃 */
+/* 仅在支持该液态玻璃材质时启用整套主题。 */
 @supports (-apple-visual-effect: -apple-system-glass-material-subdued) {
+    /* 浅色应用 */
+    #fcitx-theme {
+        color-scheme: light !important;
 
+        --pinyin-text: #202020;
+        --pinyin-label: #808080;
+
+        /* 滚动条颜色及上下留白 */
+        --pinyin-scrollbar-track: rgb(0 0 0 / 6%);
+        --pinyin-scrollbar-thumb: rgb(0 0 0 / 28%);
+        --pinyin-scrollbar-hover: rgb(0 0 0 / 40%);
+        --pinyin-scrollbar-inset: var(--border-radius, 15px);
+
+        /* 动画 */
+        --color-transition-duration: 80ms !important;
+        --scroll-animation: max-block-size 180ms ease-out !important;
+
+        /* 官方颜色变量 */
+        --light-text-color: var(--pinyin-text) !important;
+        --dark-text-color: var(--pinyin-text) !important;
+
+        --light-label-color: var(--pinyin-label) !important;
+        --dark-label-color: var(--pinyin-label) !important;
+    }
+
+    /* 深色应用自动切换；VS Code 使用独立编辑器主题，按应用指定深色。 */
+    #fcitx-theme[data-fcitx-app-dark="true"],
+    #fcitx-theme[data-fcitx-app-id="com.microsoft.VSCode"] {
+        color-scheme: dark !important;
+
+        --pinyin-text: #f5f5f5;
+        --pinyin-label: #a0a0a0;
+
+        --pinyin-scrollbar-track: rgb(255 255 255 / 5%);
+        --pinyin-scrollbar-thumb: rgb(255 255 255 / 25%);
+        --pinyin-scrollbar-hover: rgb(255 255 255 / 35%);
+    }
+
+    /* 取消官方 25px 偏移 */
+    #fcitx-theme .fcitx-decoration {
+        transform: none !important;
+    }
+
+    /* 普通横向模式：候选词宽度 */
+    #fcitx-theme .fcitx-horizontal:not(.fcitx-horizontal-scroll) .fcitx-candidate {
+        min-inline-size: var(--cell-width, 65px) !important;
+    }
+
+    #fcitx-theme .fcitx-horizontal:not(.fcitx-horizontal-scroll) .fcitx-candidate-inner {
+        margin-inline: var(--margin, 2px) !important;
+        flex-grow: 1;
+    }
+
+    /* 卷轴模式：右侧空间 */
+    #fcitx-theme .fcitx-panel:has(.fcitx-horizontal-scroll) {
+        --scrollbar-width: 12px !important;
+        --scrollbar-redundancy-width:
+            calc(29px - var(--scrollbar-width)) !important;
+    }
+
+    /* 卷轴滚动条轨道 */
+    #fcitx-theme .fcitx-scroll-area::-webkit-scrollbar-track {
+        background-color: var(--pinyin-scrollbar-track) !important;
+        border-radius: 6px !important;
+
+        margin-top: var(--pinyin-scrollbar-inset) !important;
+        margin-bottom: var(--pinyin-scrollbar-inset) !important;
+    }
+
+    /* 卷轴滚动条滑块 */
+    #fcitx-theme .fcitx-scroll-area::-webkit-scrollbar-thumb {
+        background-color: var(--pinyin-scrollbar-thumb) !important;
+        border-radius: 6px !important;
+    }
+
+    #fcitx-theme .fcitx-scroll-area::-webkit-scrollbar-thumb:hover {
+        background-color: var(--pinyin-scrollbar-hover) !important;
+    }
+
+    /* 液态玻璃 */
     /* 清除官方面板背景颜色 */
     #fcitx-theme {
         --light-panel-color: transparent !important;
