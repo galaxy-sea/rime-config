@@ -5,16 +5,14 @@
     --pinyin-text: #202020;
     --pinyin-label: #808080;
 
-    /* 滚动条颜色及两端留白 */
+    /* 滚动条颜色及上下留白 */
     --pinyin-scrollbar-track: rgb(0 0 0 / 6%);
     --pinyin-scrollbar-thumb: rgb(0 0 0 / 28%);
     --pinyin-scrollbar-hover: rgb(0 0 0 / 40%);
     --pinyin-scrollbar-inset: var(--border-radius, 15px);
 
-    /* 颜色过渡：80ms */
+    /* 动画 */
     --color-transition-duration: 80ms !important;
-
-    /* 卷轴展开高度动画：180ms */
     --scroll-animation: max-block-size 180ms ease-out !important;
 
     /* 官方颜色变量 */
@@ -25,7 +23,7 @@
     --dark-label-color: var(--pinyin-label) !important;
 }
 
-/* 深色应用 */
+/* 深色应用：根据当前应用外观自动切换 */
 #fcitx-theme[data-fcitx-app-dark="true"] {
     color-scheme: dark !important;
 
@@ -37,24 +35,12 @@
     --pinyin-scrollbar-hover: rgb(255 255 255 / 35%);
 }
 
-/* ====================================
-   实验：取消官方阴影和装饰层偏移
-   ==================================== */
-
-/* 取消装饰层的 25px 位移 */
+/* 取消官方 25px 偏移 */
 #fcitx-theme .fcitx-decoration {
     transform: none !important;
 }
 
-/* 关闭官方面板 CSS 阴影 */
-#fcitx-theme .fcitx-panel {
-    box-shadow: none !important;
-}
-
-/* ====================================
-   普通模式候选词宽度
-   ==================================== */
-
+/* 普通横向模式：候选词宽度 */
 #fcitx-theme .fcitx-horizontal:not(.fcitx-horizontal-scroll) .fcitx-candidate {
     min-inline-size: var(--cell-width, 65px) !important;
 }
@@ -64,69 +50,80 @@
     flex-grow: 1;
 }
 
-/* ====================================
-   卷轴模式
-   ==================================== */
-
-/* 右侧宽度与普通模式展开按钮保持一致 */
+/* 卷轴模式：右侧空间 */
 #fcitx-theme .fcitx-panel:has(.fcitx-horizontal-scroll) {
     --scrollbar-width: 12px !important;
-    --scrollbar-redundancy-width: calc(29px - var(--scrollbar-width)) !important;
+    --scrollbar-redundancy-width:
+        calc(29px - var(--scrollbar-width)) !important;
 }
 
-/* 滚动条轨道 */
+/* 卷轴滚动条轨道 */
 #fcitx-theme .fcitx-scroll-area::-webkit-scrollbar-track {
     background-color: var(--pinyin-scrollbar-track) !important;
     border-radius: 6px !important;
+
     margin-top: var(--pinyin-scrollbar-inset) !important;
     margin-bottom: var(--pinyin-scrollbar-inset) !important;
 }
 
-/* 滚动条滑块 */
+/* 卷轴滚动条滑块 */
 #fcitx-theme .fcitx-scroll-area::-webkit-scrollbar-thumb {
     background-color: var(--pinyin-scrollbar-thumb) !important;
     border-radius: 6px !important;
 }
 
-/* 滚动条悬浮颜色 */
 #fcitx-theme .fcitx-scroll-area::-webkit-scrollbar-thumb:hover {
     background-color: var(--pinyin-scrollbar-hover) !important;
 }
 
-/* ====================================
-   柔和液态玻璃
-   ==================================== */
-
+/* 液态玻璃 */
 @supports (-apple-visual-effect: -apple-system-glass-material-subdued) {
 
-    /* 官方面板背景透明 */
+    /* 清除官方面板背景颜色 */
     #fcitx-theme {
         --light-panel-color: transparent !important;
         --dark-panel-color: transparent !important;
+
         --light-panel-color-no-image: transparent !important;
         --dark-panel-color-no-image: transparent !important;
     }
 
-    /* 关闭官方边框 */
+    /* 关闭官方边框和阴影，保留圆角裁剪 */
     #fcitx-theme .fcitx-panel {
         --border-width: 0px !important;
+
+        border: none !important;
+        box-shadow: none !important;
+        overflow: hidden !important;
     }
 
-    /* 外层透明 */
+    /* 外层面板透明 */
     #fcitx-theme .fcitx-panel,
     #fcitx-theme .fcitx-panel-blur {
         background: transparent !important;
         -apple-visual-effect: none !important;
     }
 
-    /* 官方圆角 */
+    /* 继承官方圆角 */
     #fcitx-theme .fcitx-panel-blur {
         border-radius: inherit !important;
     }
 
-    /* 内层柔和液态玻璃 */
+    /*
+     * 唯一视觉元素：
+     * 只保留液态玻璃自身的材质与圆角
+     * 不使用自定义描边或阴影
+     */
     #fcitx-theme .fcitx-hoverables {
+        background: transparent !important;
+
+        border: none !important;
+        box-shadow: none !important;
+        outline: none !important;
+
         border-radius: inherit !important;
-        -apple-visual-effect: -apple-system-glass-material-subdued !important;
+
+        -apple-visual-effect:
+            -apple-system-glass-material-subdued !important;
     }
 }
