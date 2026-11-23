@@ -1,4 +1,9 @@
 patch:
+  # 两端使用同一份共享短语文件。
+  "custom_phrase/user_dict": custom_phrase
+  "custom_phrase/db_class": tabledb
+  "custom_phrase/enable_user_dict": true
+
   "switches/+":
     - name: programmer_english
       reset: 0

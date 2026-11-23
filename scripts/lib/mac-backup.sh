@@ -14,5 +14,5 @@ backup_mac_rime() {
     fi
     MAC_BACKUP_DIR="$backup_dir"
     touch "$backup_dir/.complete"
-    printf '完整备份已保存：%s\n' "$backup_dir"
+    :
 }

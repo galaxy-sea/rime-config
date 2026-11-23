@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # 在工程备份中选择完整版本进行还原。
-set -euo pipefail
+set -Eeuo pipefail
+trap 'status=$?; printf "失败：%s 第 %s 行执行出错（退出码 %s），原因见上方错误。\n" "${0##*/}" "$LINENO" "$status" >&2' ERR
+printf '%s\n' '正在选择并还原 macOS 备份…'
 ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 RIME_DIR="$HOME/.local/share/fcitx5/rime"
 FCITX_APP="/Library/Input Methods/Fcitx5.app"
@@ -17,7 +19,7 @@ done
 [[ -t 0 ]] || { echo "请在交互终端中运行，以选择还原版本" >&2; exit 1; }
 
 selected=0
-printf '选择还原版本：↑↓ 移动，回车还原，q 取消\n'
+:
 while true; do
     for ((i = 0; i < ${#BACKUPS[@]}; i++)); do
         if ((i == selected)); then
@@ -42,13 +44,13 @@ while true; do
 done
 
 chosen="${BACKUPS[$selected]}"
-printf '\n还原版本：%s\n' "${chosen##*/}"
+:
 # 覆盖前保存当前完整状态；失败时不会继续还原。
 backup_mac_rime
 mkdir -p "$RIME_DIR"
 # 完整还原，移除所选版本中不存在的文件。
 rsync -a --delete "$chosen/rime/" "$RIME_DIR/"
-printf '\n正在重启 Fcitx5...\n'
+:
 # 未运行时 pkill 返回 1，仍继续启动；其他错误停止。
 pkill -x Fcitx5 || [[ $? -eq 1 ]]
 sleep 1

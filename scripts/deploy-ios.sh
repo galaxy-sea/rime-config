@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-set -euo pipefail
+set -Eeuo pipefail
+trap 'status=$?; printf "失败：%s 第 %s 行执行出错（退出码 %s），原因见上方错误。\n" "${0##*/}" "$LINENO" "$status" >&2' ERR
+printf '%s\n' '正在部署 iOS 配置和主题…'
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 APP_ID="com.ihsiao.apps.Hamster3"
@@ -10,7 +12,7 @@ RIME_DATA="$ROOT/ios/RimeUserData"
 START=$SECONDS
 
 # 搜索设备
-printf '\n正在搜索设备...\n'
+:
 
 DEVICES="$(pymobiledevice3 usbmux list | python3 -c '
 import json
@@ -52,7 +54,7 @@ while IFS=$'\t' read -r udid name; do
         continue
     fi
 
-    echo "正在检查：$name"
+    :
 
     if ! apps="$(pymobiledevice3 apps list \
         --udid "$udid" --type User)"; then
@@ -73,9 +75,9 @@ print("yes" if sys.argv[1] in apps else "no")
         NAMES+=("$name")
         COUNT=$((COUNT + 1))
 
-        echo "已安装元书：$name"
+        :
     else
-        echo "未安装元书，跳过：$name"
+        :
     fi
 
 done <<< "$DEVICES"
@@ -85,10 +87,19 @@ if [[ "$COUNT" -eq 0 ]]; then
     exit 1
 fi
 
+:
+bash "$ROOT/scripts/phrase-crypt.sh" > /dev/null
+
 # 确认目标设备后再编译；失败时停止同步。
 if [[ "${SKIP_BUILD:-0}" != "1" ]]; then
-    echo "正在编译皮肤..."
-    bash "$ROOT/scripts/compile-ios.sh"
+    :
+    bash "$ROOT/scripts/compile-ios.sh" > /dev/null
+fi
+
+# 加解密成功后应有本地明文供部署使用。
+if [[ ! -f "$ROOT/shared/rime-ice/custom_phrase.txt" ]]; then
+    echo "缺少本地 custom_phrase.txt；如已有密文，请先运行 bash scripts/phrase-crypt.sh decrypt" >&2
+    exit 1
 fi
 
 # 准备部署资源
@@ -133,8 +144,10 @@ if [[ -d "$ROOT/shared" || -d "$RIME_DATA" ]]; then
     RIME_DATA="$STAGE/RimeUserData"
 fi
 find "$STAGE" -type f -iname '.DS_Store' -delete
+# 私人短语密文仅用于仓库存储，不上传到输入法。
+rm -f "$STAGE/RimeUserData/rime-ice/custom_phrase.txt.gpg"
 
-printf '准备皮肤：%s\n' "$SKIN_NAMES"
+:
 
 # 部署所有目标设备
 SUCCESS=0
@@ -180,7 +193,7 @@ deploy_device() {
 
 DEVICE_PIDS=()
 for ((i = 0; i < COUNT; i++)); do
-    printf '\n正在部署：%s\n' "${NAMES[$i]}"
+    :
     # 日志按设备收集，避免多设备的输出交错。
     deploy_device "$i" >"$STAGE/device-$i.log" 2>&1 &
     DEVICE_PIDS+=("$!")
@@ -194,17 +207,13 @@ for ((i = 0; i < COUNT; i++)); do
     cat "$STAGE/device-$i.log"
     if [[ "$device_ok" -eq 1 ]]; then
         SUCCESS=$((SUCCESS + 1))
-        echo "部署成功：${NAMES[$i]}"
+        :
     else
         FAILED=$((FAILED + 1))
         echo "部署失败：${NAMES[$i]}"
     fi
 done
 
-echo
-echo "部署统计："
-echo "  成功：$SUCCESS 台"
-echo "  失败：$FAILED 台"
-echo "  耗时：$((SECONDS - START)) 秒"
+printf '部署结束：成功 %d 台，失败 %d 台，耗时 %d 秒。\n' "$SUCCESS" "$FAILED" "$((SECONDS - START))"
 
 [[ "$FAILED" -eq 0 ]]

@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # 将共享及 macOS 专属配置部署到 Fcitx5-Rime。
-set -euo pipefail
+set -Eeuo pipefail
+trap 'status=$?; printf "失败：%s 第 %s 行执行出错（退出码 %s），原因见上方错误。\n" "${0##*/}" "$LINENO" "$status" >&2' ERR
+printf '%s\n' '正在部署 macOS 配置和主题…'
 
 ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 RIME_DIR="$HOME/.local/share/fcitx5/rime"
@@ -12,11 +14,14 @@ if [[ ! -d "$FCITX_APP" ]]; then
     exit 1
 fi
 
+:
+bash "$ROOT/scripts/phrase-crypt.sh" > /dev/null
+
 shopt -s nullglob
 CUSTOM_FILES=("$ROOT"/mac/RimeUserData/rime-ice/*.custom.yaml)
-FILES=("$ROOT/shared/rime-ice/fuzzy.yaml" "${CUSTOM_FILES[@]}")
-if [[ ! -f "${FILES[0]}" || ${#CUSTOM_FILES[@]} -eq 0 ]]; then
-    echo "缺少 fuzzy.yaml 或 mac 下的 *.custom.yaml 配置" >&2
+FILES=("$ROOT/shared/rime-ice/fuzzy.yaml" "$ROOT/shared/rime-ice/custom_phrase.txt" "${CUSTOM_FILES[@]}")
+if [[ ! -f "${FILES[0]}" || ! -f "${FILES[1]}" || ${#CUSTOM_FILES[@]} -eq 0 ]]; then
+    echo "缺少 fuzzy.yaml、custom_phrase.txt 或 mac 下的 *.custom.yaml 配置" >&2
     exit 1
 fi
 
@@ -60,7 +65,7 @@ while true; do
     printf '\033[%dA' "${#THEMES[@]}"
 done
 theme="${THEMES[$selected]##*/}"
-printf '\n已选择：%s\n' "$theme"
+:
 CSS_SOURCE="$ROOT/mac/$theme/style.css"
 CSS_TARGET="$HOME/.local/share/fcitx5/www/css/style.css"
 WEBPANEL_CONFIG="$HOME/.config/fcitx5/conf/webpanel.conf"
@@ -70,7 +75,7 @@ if [[ ! -f "$CSS_SOURCE" ]]; then
 fi
 command -v python3 >/dev/null 2>&1 || { echo "缺少 python3" >&2; exit 1; }
 
-printf '正在复制配置到：%s\n' "$RIME_DIR"
+:
 mkdir -p "$RIME_DIR"
 # 完整备份到工程，再覆盖配置。
 source "$ROOT/scripts/lib/mac-backup.sh"
@@ -84,6 +89,9 @@ if [[ -f "$CSS_TARGET" ]]; then
     cp -p "$CSS_TARGET" "$MAC_BACKUP_DIR/css/style.css"
 fi
 cp "${FILES[@]}" "$RIME_DIR/"
+
+:
+bash "$ROOT/scripts/init-mac-sync.sh" > /dev/null
 mkdir -p "$(dirname "$CSS_TARGET")" "$(dirname "$WEBPANEL_CONFIG")"
 cp "$CSS_SOURCE" "$CSS_TARGET"
 python3 - "$WEBPANEL_CONFIG" <<'PYCONFIG'
@@ -101,10 +109,10 @@ else:
     s = setting + '\n' + s
 p.write_text(s)
 PYCONFIG
-printf '已应用主题：%s，UserCss=fcitx:///file/css/style.css\n' "$theme"
+:
 
 
-printf '\n正在重启 Fcitx5...\n'
+:
 # 未运行时 pkill 返回 1，仍继续启动；其他错误停止。
 pkill -x Fcitx5 || [[ $? -eq 1 ]]
 sleep 1

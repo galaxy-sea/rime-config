@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # 在项目与元书之间下载或上传 hamster.yaml。
-set -euo pipefail
+set -Eeuo pipefail
+trap 'status=$?; printf "失败：%s 第 %s 行执行出错（退出码 %s），原因见上方错误。\n" "${0##*/}" "$LINENO" "$status" >&2' ERR
+printf '%s\n' '正在同步 hamster.yaml…'
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 APP_ID="com.ihsiao.apps.Hamster3"
 MODE="${1:-pull}"
@@ -21,7 +23,7 @@ for tool in pymobiledevice3 python3; do
 done
 
 # 搜索设备
-printf '\n正在搜索设备...\n'
+:
 
 DEVICES="$(pymobiledevice3 usbmux list | python3 -c '
 import json
@@ -63,7 +65,7 @@ while IFS=$'\t' read -r udid name; do
         continue
     fi
 
-    echo "正在检查：$name"
+    :
 
     if ! apps="$(pymobiledevice3 apps list \
         --udid "$udid" --type User)"; then
@@ -84,9 +86,9 @@ print("yes" if sys.argv[1] in apps else "no")
         NAMES+=("$name")
         COUNT=$((COUNT + 1))
 
-        echo "已安装元书：$name"
+        :
     else
-        echo "未安装元书，跳过：$name"
+        :
     fi
 
 done <<< "$DEVICES"
@@ -106,7 +108,7 @@ if [[ "$COUNT" -gt 1 ]]; then
 fi
 
 if [[ "$MODE" == push ]]; then
-    printf '\n正在上传 hamster.yaml 到：%s\n' "${NAMES[0]}"
+    :
     pymobiledevice3 apps push --documents --udid "${TARGETS[0]}" \
         "$APP_ID" "$LOCAL_FILE" "/Documents"
     echo "上传完成：/Documents/hamster.yaml"
@@ -115,7 +117,7 @@ fi
 
 STAGE="$(mktemp -d)"
 trap 'rm -rf -- "$STAGE"' EXIT
-printf '\n正在下载：%s 的 hamster.yaml\n' "${NAMES[0]}"
+:
 pymobiledevice3 apps pull --documents --udid "${TARGETS[0]}" \
     "$APP_ID" "/Documents/hamster.yaml" "$STAGE/hamster.yaml"
 if [[ ! -f "$STAGE/hamster.yaml" ]]; then

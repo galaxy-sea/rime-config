@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # 自动编译 ios/Skins 下所有 test-main.jsonnet。
-set -euo pipefail
+set -Eeuo pipefail
+trap 'status=$?; printf "失败：%s 第 %s 行执行出错（退出码 %s），原因见上方错误。\n" "${0##*/}" "$LINENO" "$status" >&2' ERR
+printf '%s\n' '正在编译 iOS 测试主题…'
 
 if [[ $# -ne 0 ]]; then
   echo "用法: $0（自动编译 ios/Skins 下的测试主题）" >&2
@@ -23,10 +25,10 @@ while IFS= read -r -d '' source_file; do
   if [[ $(basename -- "$source_dir") == jsonnet ]]; then
     output_dir=$(dirname -- "$source_dir")
   fi
-  echo "编译：$source_file"
+  :
   theme_start=$SECONDS
   mkdir -p -- "$output_dir/light" "$output_dir/dark"
-  jsonnet -S -m "$output_dir" -- "$source_file"
+  jsonnet -S -m "$output_dir" -- "$source_file" > /dev/null
   theme_names+=("${output_dir#"$repo_dir/ios/Skins/"}")
   theme_times+=("$((SECONDS - theme_start))")
 done < <(find "$repo_dir/ios/Skins" -type f -name test-main.jsonnet -print0)
@@ -36,8 +38,4 @@ if [[ $found -eq 0 ]]; then
   exit 1
 fi
 
-printf '\n编译耗时统计：\n'
-for ((i = 0; i < ${#theme_names[@]}; i++)); do
-  printf '  %s：%d 秒\n' "${theme_names[i]}" "${theme_times[i]}"
-done
-printf '总耗时：%d 秒\n' "$((SECONDS - total_start))"
+printf '编译成功，耗时 %d 秒。\n' "$((SECONDS - total_start))"

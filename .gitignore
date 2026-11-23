@@ -1,3 +1,12 @@
 .DS_store
 # 本机完整 Rime 备份
 /backups/mac/
+.backup/
+
+# 私人短语：仅提交 .gpg 密文
+/shared/rime-ice/custom_phrase.txt
+/shared/rime-ice/custom_phrase.txt.tmp
+/backups/mac-phrases/
+
+# iCloud 同步目录迁移备份
+/backups/mac-sync/
