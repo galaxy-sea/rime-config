@@ -1,8 +1,0 @@
-pinyin:
-  pad:
-    floating: "pinyinPortrait"
-    landscape: "iPadPinyinLandscape"
-    portrait: "iPadPinyinPortrait"
-  phone:
-    landscape: "pinyinLandscape"
-    portrait: "pinyinPortrait"
