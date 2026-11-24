@@ -1,0 +1,15 @@
+# macOS 与 iOS 共用的雾凇拼音补丁
+patch:
+  "translator/packs/+":
+    - my_terms
+
+  "custom_phrase/user_dict": custom_phrase
+  "custom_phrase/db_class": tabledb
+  "custom_phrase/enable_user_dict": true
+
+  # 原来的模糊音
+  "speller/algebra/+":
+    __include: fuzzy:/algebra
+
+  # 草！这破 g 和 h，统统滚去下一个音节
+  "engine/processors/@before 1": lua_processor@*fucking_gh

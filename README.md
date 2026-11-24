@@ -98,3 +98,39 @@ chmod +x scripts/deploy-ios.sh
 剪贴板操作	全选、复制、剪切、粘贴的快捷交互	★★★★☆
 长按删除	支持合理的删除加速	★★★☆☆
 输入统计	本地统计输入字数和频率	★★☆☆☆
+
+
+
+
+
+
+### mac 安装雾凇拼音
+RIME="$HOME/.local/share/fcitx5/rime"
+TMP="$(mktemp -d)"
+
+git clone --depth 1 \
+  https://github.com/iDvel/rime-ice.git \
+  "$TMP/rime-ice" &&
+
+mkdir -p "$RIME" &&
+
+rsync -av \
+  --exclude='.git/' \
+  --exclude='.github/' \
+  --exclude='others/' \
+  --exclude='build/' \
+  --exclude='README.md' \
+  --exclude='AGENTS.md' \
+  --exclude='LICENSE' \
+  --exclude='custom_phrase.txt' \
+  --exclude='default.yaml' \
+  --exclude='*.custom.yaml' \
+  "$TMP/rime-ice/" "$RIME/" &&
+
+{ test -f "$RIME/default.yaml" ||
+  cp "$TMP/rime-ice/default.yaml" "$RIME/"; } &&
+
+{ test -f "$RIME/custom_phrase.txt" ||
+  cp "$TMP/rime-ice/custom_phrase.txt" "$RIME/"; } &&
+
+rm -rf "$TMP"

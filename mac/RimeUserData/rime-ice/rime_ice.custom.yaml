@@ -1,8 +1,6 @@
 patch:
-  # 两端使用同一份共享短语文件。
-  "custom_phrase/user_dict": custom_phrase
-  "custom_phrase/db_class": tabledb
-  "custom_phrase/enable_user_dict": true
+  __include: rime_ice_common:/patch
 
-  "speller/algebra/+":
-    __include: fuzzy:/algebra
+  "translator/initial_quality": 1.2
+  "melt_eng/initial_quality": 1.1
+  "custom_phrase/initial_quality": 99

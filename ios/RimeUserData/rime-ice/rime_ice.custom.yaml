@@ -1,8 +1,5 @@
 patch:
-  # 两端使用同一份共享短语文件。
-  "custom_phrase/user_dict": custom_phrase
-  "custom_phrase/db_class": tabledb
-  "custom_phrase/enable_user_dict": true
+  __include: rime_ice_common:/patch
 
   "switches/+":
     - name: programmer_english
@@ -19,7 +16,3 @@ patch:
 
   "engine/filters/+":
     - lua_filter@*programmer_english*filter
-
-  # 引用公共模糊音
-  "speller/algebra/+":
-    __include: fuzzy:/algebra
