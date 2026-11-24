@@ -1,7 +1,25 @@
-# iOS 雾凇拼音个性化补丁，在官方方案基础上追加配置。
+# iOS 雾凇拼音个性化补丁，所有组件列表只追加，不替换官方列表。
 patch:
-  # 引用 macOS / iOS 共用配置：技术词库、候选权重、模糊音等。
-  __include: rime_ice_common:/patch
+  # 候选权重。
+  "translator/initial_quality": 1.2
+  "melt_eng/initial_quality": 1.1
+
+  # 注册独立技术词库及动态词频，不替换主拼音翻译器。
+  "schema/dependencies/+":
+    - tech_codes
+  "tech_codes/dictionary": tech_codes
+  "tech_codes/user_dict": tech_codes
+  "tech_codes/db_class": userdb
+  "tech_codes/enable_user_dict": true
+  "tech_codes/enable_completion": false
+  "tech_codes/enable_sentence": false
+  "tech_codes/enable_encoder": false
+  "tech_codes/initial_quality": 1.4
+  "engine/translators/@after 1": table_translator@tech_codes
+
+  # 复用模糊音规则数据，仅追加到原有拼写规则。
+  "speller/algebra/+":
+    __include: fuzzy:/algebra
 
   # 独立英文模式，由皮肤「中 / En」按钮切换；reset: 0 表示初始化时关闭。
   # 此开关与原生 ascii_mode 的协调逻辑由 programmer_english.lua 处理。
@@ -25,6 +43,10 @@ patch:
   "engine/translators/@before 0": lua_translator@*programmer_english*translator
 
   # 英文模式的专属片段只保留该英文翻译器的候选；其他情况放行。
-  # 公共补丁也有 engine/filters/+，修改时应核对部署后的实际过滤器列表。
+  # 仅追加英文模式过滤器，保留官方过滤器。
   "engine/filters/+":
     - lua_filter@*programmer_english*filter
+
+  # 在简繁、Emoji、去重等包装之前调整原始单字候选范围。
+  # 仅前插此过滤器，保留全部官方过滤器；不改写输入或技术词库编码。
+  "engine/filters/@before 0": lua_filter@*fucking_gh_select

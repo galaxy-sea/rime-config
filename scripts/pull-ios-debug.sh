@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# 拉取元书应用侧日志与 rime-ice 的 YAML 配置供本地排查。
+# 拉取元书应用侧日志与 rime-ice 的 YAML / Lua 配置供本地排查。
 set -Eeuo pipefail
 trap 'status=$?; printf "拉取失败（退出码 %s），原因见上方错误。\n" "$status" >&2' ERR
 ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -114,8 +114,8 @@ done
     echo "拉取失败：下载目录不完整，原有本地数据未修改。" >&2
     exit 1
 }
-# CLI 递归下载后仅保留 YAML，保留 build 等目录结构。
-find "$STAGE/rime-ice" -type f ! -name '*.yaml' -delete
+# CLI 递归下载后仅保留 YAML 和 Lua，保留 build、lua 等目录结构。
+find "$STAGE/rime-ice" -type f ! -name '*.yaml' ! -name '*.lua' -delete
 find "$STAGE/rime-ice" -type l -delete
 find "$STAGE/rime-ice" -depth -type d -empty -delete
 mkdir -p "$STAGE/rime-ice"
@@ -129,4 +129,4 @@ fi
 mkdir -p "$TARGET"
 mv "$STAGE/Logs" "$TARGET/log"
 mv "$STAGE/rime-ice" "$TARGET/rime-ice"
-printf '拉取成功：.log/元书/log/、.log/元书/rime-ice/（仅 YAML）\n'
+printf '拉取成功：.log/元书/log/、.log/元书/rime-ice/（仅 YAML / Lua）\n'

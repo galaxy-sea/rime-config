@@ -57,7 +57,15 @@ function M.func(input, env)
           find_boundary(raw, start, finish)
 
         if boundary then
-          cand._end = boundary
+          -- Phrase / Simple 支持直接设置 preedit；Shadow / Uniquified
+          -- 仍从被包装候选读取文本，不能仅修改外层范围。
+          local kind = cand:get_dynamic_type()
+          if kind == "Phrase" or kind == "Simple" then
+            -- 原 preedit 可能仍包含被保留的 g；若不截短，尾部原始输入
+            -- 再显示一次 g 时就会看到 gg。必须与 [start, boundary) 一致。
+            cand.preedit = raw:sub(start + 1, boundary)
+            cand._end = boundary
+          end
         end
       end
     end

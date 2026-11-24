@@ -1,2 +1,25 @@
+# macOS 雾凇拼音个性化补丁，保留官方组件，仅追加自定义功能。
 patch:
-  __include: rime_ice_common:/patch
+  # 候选权重。
+  "translator/initial_quality": 1.2
+  "melt_eng/initial_quality": 1.1
+
+  # 注册独立技术词库及动态词频，不替换主拼音翻译器。
+  "schema/dependencies/+":
+    - tech_codes
+  "tech_codes/dictionary": tech_codes
+  "tech_codes/user_dict": tech_codes
+  "tech_codes/db_class": userdb
+  "tech_codes/enable_user_dict": true
+  "tech_codes/enable_completion": false
+  "tech_codes/enable_sentence": false
+  "tech_codes/enable_encoder": false
+  "tech_codes/initial_quality": 1.4
+  "engine/translators/@after 1": table_translator@tech_codes
+
+  # 复用模糊音规则数据，仅追加到原有拼写规则。
+  "speller/algebra/+":
+    __include: fuzzy:/algebra
+
+  # 在官方过滤器之前处理原始候选，避免操作简繁、Emoji、去重包装。
+  "engine/filters/@before 0": lua_filter@*fucking_gh_select
