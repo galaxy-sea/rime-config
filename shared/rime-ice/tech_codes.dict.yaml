@@ -1,0 +1,85 @@
+# Rime dictionary
+# encoding: utf-8
+---
+name: tech_codes
+version: "1.0"
+sort: by_weight
+use_preset_vocabulary: false
+columns:
+  - text
+  - code
+  - weight
+...
+
+Spring Integration	si	101
+Apache APISIX	aa	101
+Apache Dubbo	ad	101
+Apache RocketMQ	ar	101
+Apache Seata	as	101
+Apache SkyWalking	as	101
+Android Studio	as	101
+native	bendi	101
+plugin	cajian	101
+C/C++	cc	101
+cloudflare	cf	101
+CompletableFuture	cf	101
+Code Review	cr	101
+DevOps	devops	101
+DataGrip	dg	101
+Dromara mica mqtt	dmm	101
+Docker	docker	101
+DOM树	domsu	101
+Elasticsearch	es	101
+method	fanfa	101
+Contribution	gongxian	101
+GPIO	gpio	101
+merge	hebin	101
+Hibernate	hib	101
+IDEs	ides	101
+IntelliJ IDEA	ii	101
+IoT	iot	101
+JetBrains	jb	101
+Oracle	jiaguwen	101
+interface	jiekou	101
+JavaScript	js	101
+Kubernetes	kbs	101
+Kotlin	kt	101
+LoadBalancer	lb	101
+MyBatis	mb	101
+MacBook Pro	mbp	101
+MyBatis Plus	mbp	101
+Markdown	md	101
+MongoDB	mdb	101
+MySQL	mysql	101
+OceanBase	ob	101
+OpenFeign	of	101
+OpenRestry	or	101
+PostgreSQL	pgsql	101
+driver	qudon	101
+Spring Boot	sb	101
+Spring Cloud	sc	101
+Spring Cloud Alibaba	sca	101
+Spring Cloud Commons	scc	101
+Spring Cloud Discovery	scd	101
+Spring Cloud Gateway	scg	101
+Spring Cloud LoadBalancer	scl	101
+Spring Cloud Netflix	scn	101
+Spring Cloud OpenFeign	sco	101
+Spring Data	sd	101
+Spring Framework	sf	101
+entity	sitilei	101
+Spring Security	ss	101
+Spring WebMVC	sw	101
+Spring WebFlux	sw	101
+TDengine	td	101
+Feature	texin	101
+ThreadLoad	th	101
+condition	tiaojian	101
+ThinkPad	tp	101
+TypeScript	ts	101
+WebSocket	ws	101
+Ubuntu	wubantu	101
+Tampermonkey	youhou	101
+Field	ziduan	101
+Zookeeper	zk	101
+Author	zuoze	101

@@ -1,0 +1,11 @@
+
+# Rime schema
+# encoding: utf-8
+
+schema:
+  schema_id: tech_codes
+  name: 技术术语词库
+  version: "1.0"
+
+translator:
+  dictionary: tech_codes
