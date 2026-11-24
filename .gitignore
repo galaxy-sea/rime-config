@@ -1,4 +1,5 @@
 .DS_store
+.idea/
 # 本机完整 Rime 备份
 /backups/mac/
 .backup/

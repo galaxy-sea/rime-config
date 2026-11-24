@@ -1,0 +1,35 @@
+patch:
+  "translator/initial_quality": 1.2
+  "melt_eng/initial_quality": 1.1
+
+    # 注册术语词库编译依赖
+  "schema/dependencies/+":
+    - tech_codes
+
+  # 自由编码技术词库
+  "tech_codes/dictionary": tech_codes
+  "tech_codes/user_dict": tech_codes
+  "tech_codes/db_class": userdb
+  # 开启动态词频
+  "tech_codes/enable_user_dict": true
+  # 保持现有功能
+  "tech_codes/enable_completion": false
+  "tech_codes/enable_sentence": false
+  "tech_codes/enable_encoder": false
+  # 与主拼音候选竞争
+  "tech_codes/initial_quality": 1.4
+  # 注册翻译器
+  "engine/translators/@after 1": table_translator@tech_codes
+
+  # 原有模糊音
+  "speller/algebra/+":
+    __include: fuzzy:/algebra
+
+
+
+  # 草！这破 g 和 h，统统滚去下一个音节
+  # "engine/processors/@before 1": lua_processor@*fucking_gh
+
+  "engine/filters/+":
+    - lua_filter@*fucking_gh_select # 不改输入，只控制单字候选消耗范围
+    # - lua_filter@*show_quality # 查看权重的
