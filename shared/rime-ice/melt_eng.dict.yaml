@@ -1,0 +1,9 @@
+# Rime dictionary
+# encoding: utf-8
+# 仅引入英文主词库，排除缩写及互联网扩展词库 en_ext。
+---
+name: melt_eng
+version: "2026-11-25"
+import_tables:
+  - en_dicts/en
+...

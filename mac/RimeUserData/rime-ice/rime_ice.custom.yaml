@@ -4,6 +4,10 @@ patch:
   "translator/initial_quality": 1.2
   "melt_eng/initial_quality": 1.1
 
+  # 关闭中英混合词库：该翻译器只有用户词库，禁用后不再读取 cn_en.txt。
+  "cn_en/dictionary": ""
+  "cn_en/enable_user_dict": false
+
   # 注册独立技术词库及动态词频，不替换主拼音翻译器。
   "schema/dependencies/+":
     - tech_codes
