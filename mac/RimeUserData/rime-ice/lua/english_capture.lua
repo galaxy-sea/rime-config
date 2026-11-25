@@ -26,14 +26,82 @@ local function append_word(env, word)
   end
 end
 
+local function find_dictionary_candidate(ctx, word)
+  local composition = ctx.composition
+  if composition:empty() then return false end
+  local segment = composition:back()
+  local menu = segment and segment.menu
+  if not menu then return false end
+  local expected = word:lower()
+  local index = 0
+  while true do
+    -- 按需生成后续候选，不能仅检查已经显示的第一页。
+    local cand = menu:get_candidate_at(index)
+    if not cand then return false end
+    if cand._start == 0 and cand._end == #word and cand.text:lower() == expected then
+      for _, genuine in ipairs(cand:get_genuines()) do
+        local phrase = genuine:to_phrase()
+        -- 词库及用户词库候选才代表已收录，排除原样回显、补全和造句。
+        if phrase and (phrase.type == 'table' or phrase.type == 'user_table')
+          and phrase.lang_name and phrase.lang_name ~= '' then
+          return { candidate = genuine, language = phrase.lang_name }
+        end
+      end
+    end
+    index = index + 1
+  end
+end
+
+local function learn_candidate(env, ctx, match)
+  local namespaces = { tech_codes = 'tech_codes', melt_eng = 'melt_eng' }
+  local namespace = namespaces[match.language]
+  if not namespace then
+    warn('命中的词库暂不支持回车调频：' .. match.language)
+    return
+  end
+  -- 如果匹配词仍在提交的 composition 中，原生翻译器会学习，不重复计数。
+  local selected = ctx:get_selected_candidate()
+  if selected then
+    for _, genuine in ipairs(selected:get_genuines()) do
+      local phrase = genuine:to_phrase()
+      if phrase and phrase.lang_name == match.language
+        and genuine.text == match.candidate.text then
+        return
+      end
+    end
+  end
+  local memory = env.memories[namespace]
+  if not memory then
+    memory = Memory(env.engine, env.engine.schema, namespace)
+    env.memories[namespace] = memory
+  end
+  -- 使用候选自身的编码和来源，不能用输入字符串拼造其他词库的编码。
+  memory:start_session()
+  local ok, updated = pcall(function()
+    return memory:update_candidate(match.candidate, 1)
+  end)
+  if not ok or not updated then
+    memory:discard_session()
+    warn('英文词频更新失败：' .. tostring(updated))
+    return
+  end
+  if not memory:finish_session() then warn('英文词频保存失败。') end
+end
+
 function M.init(env)
   env.output_path = env.engine.schema.config:get_string('english_capture/output_path')
+  env.memories = {}
   env.connection = env.engine.context.commit_notifier:connect(function(ctx)
-    local word = env.pending
+    local pending = env.pending
     env.pending = nil
     -- 回车最终提交的内容必须与原输入完全相同，排除中文选词等情况。
-    if word and ctx:get_commit_text() == word then
-      local ok, err = pcall(append_word, env, word)
+    if pending and ctx:get_commit_text() == pending.word then
+      local ok, err
+      if pending.match then
+        ok, err = pcall(learn_candidate, env, ctx, pending.match)
+      else
+        ok, err = pcall(append_word, env, pending.word)
+      end
       if not ok then warn(tostring(err)) end
     end
   end)
@@ -51,13 +119,18 @@ function M.func(key, env)
   if ctx:get_option('ascii_mode') or not ctx:is_composing() then return 2 end
   local word = ctx.input or ''
   if #word >= 2 and #word <= 64 and word:match('^[A-Za-z]+$') then
-    env.pending = word
+    -- 在原生回车处理前检查；之后候选会被清除，不能在 commit 通知中检查。
+    local ok, known = pcall(find_dictionary_candidate, ctx, word)
+    if not ok then warn('候选检查失败，保留收集记录：' .. tostring(known)) end
+    env.pending = { word = word, match = ok and known or nil }
   end
   return 2
 end
 
 function M.fini(env)
   if env.connection then env.connection:disconnect() end
+  for _, memory in pairs(env.memories or {}) do memory:disconnect() end
+  env.memories = nil
 end
 
 return M

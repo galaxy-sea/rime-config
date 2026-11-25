@@ -8,6 +8,10 @@ patch:
   # 候选权重。
   "translator/initial_quality": 1.2
   "melt_eng/initial_quality": 1.1
+  # 回车命中英文词库时写入用户词频，原词库文件保持不变。
+  "melt_eng/enable_user_dict": true
+  "melt_eng/user_dict": melt_eng
+  "melt_eng/db_class": userdb
 
   # 关闭中英混合词库：该翻译器只有用户词库，禁用后不再读取 cn_en.txt。
   "cn_en/dictionary": ""
