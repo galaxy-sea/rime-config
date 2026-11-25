@@ -18,6 +18,7 @@ columns:
 #### 大小写转换
 
 ### 启用的
+data	data	102
 
 #### 中文转换英文
 Author	zuoze	101
@@ -106,9 +107,5 @@ Windows	win	101
 
 ### 未启用的
 # bai	bai	101
-# google	google	101
-# lib	lib	101
+# lua	lua	101
 # shell	shell	101
-# tab	tab	101
-# test	test	101
-# data	data	101
