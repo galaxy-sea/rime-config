@@ -9,6 +9,27 @@ RIME_DIR="$HOME/.local/share/fcitx5/rime"
 FCITX_APP="/Library/Input Methods/Fcitx5.app"
 START=$SECONDS
 
+ICON_NAMES=(menu_icon.pdf menu_icon_15.pdf menu_icon_26.pdf)
+ICON_DIR="$FCITX_APP/Contents/Resources"
+ICON_SOURCES=()
+CHANGED_ICONS=()
+ICON_COUNT=0
+ICON_NEEDS_SUDO=0
+for icon in "${ICON_NAMES[@]}"; do
+    if [[ ! -f "$ROOT/mac/icon/$icon" || ! -f "$ICON_DIR/$icon" ]]; then
+        echo "缺少图标源文件或应用原图标：$icon" >&2
+        exit 1
+    fi
+    source_hash=$(shasum -a 256 "$ROOT/mac/icon/$icon" | cut -d ' ' -f 1)
+    target_hash=$(shasum -a 256 "$ICON_DIR/$icon" | cut -d ' ' -f 1)
+    if [[ "$source_hash" != "$target_hash" ]]; then
+        ICON_SOURCES+=("$ROOT/mac/icon/$icon")
+        CHANGED_ICONS+=("$icon")
+        ICON_COUNT=$((ICON_COUNT + 1))
+        [[ -w "$ICON_DIR/$icon" && -w "$ICON_DIR" ]] || ICON_NEEDS_SUDO=1
+    fi
+done
+
 if [[ ! -d "$FCITX_APP" ]]; then
     echo "找不到 Fcitx5：$FCITX_APP" >&2
     exit 1
@@ -86,9 +107,20 @@ done
 find "$STAGE" -type f -iname '.DS_Store' -delete
 
 mkdir -p "$RIME_DIR"
+# 覆盖应用图标需要权限时，提前验证，避免部署一半才失败。
+if [[ "$ICON_NEEDS_SUDO" -eq 1 ]]; then
+    sudo -v
+fi
 # 完整备份到工程，再覆盖配置。
 source "$ROOT/scripts/lib/mac-backup.sh"
 backup_mac_rime
+# 只备份本次实际需要替换的图标。
+if [[ "$ICON_COUNT" -gt 0 ]]; then
+    mkdir -p "$MAC_BACKUP_DIR/icons"
+    for icon in "${CHANGED_ICONS[@]}"; do
+        cp -p "$ICON_DIR/$icon" "$MAC_BACKUP_DIR/icons/$icon"
+    done
+fi
 # 与本次 Rime 快照放在同一时间戳目录，覆盖之前先保存原件。
 if [[ -f "$WEBPANEL_CONFIG" ]]; then
     cp -p "$WEBPANEL_CONFIG" "$MAC_BACKUP_DIR/webpanel.conf"
@@ -122,6 +154,15 @@ PYCONFIG
 
 
 :
+# SHA-256 相同时跳过写入，不改变应用资源的修改时间。
+if [[ "$ICON_COUNT" -gt 0 ]]; then
+    if [[ "$ICON_NEEDS_SUDO" -eq 1 ]]; then
+        sudo cp "${ICON_SOURCES[@]}" "$ICON_DIR/"
+    else
+        cp "${ICON_SOURCES[@]}" "$ICON_DIR/"
+    fi
+fi
+
 # 未运行时 pkill 返回 1，仍继续启动；其他错误停止。
 pkill -x Fcitx5 || [[ $? -eq 1 ]]
 sleep 1
