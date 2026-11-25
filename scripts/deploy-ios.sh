@@ -88,17 +88,17 @@ if [[ "$COUNT" -eq 0 ]]; then
 fi
 
 :
-bash "$ROOT/scripts/phrase-crypt.sh" > /dev/null
+bash "$ROOT/scripts/lib/phrase-crypt.sh" > /dev/null
 
 # 确认目标设备后再编译；失败时停止同步。
 if [[ "${SKIP_BUILD:-0}" != "1" ]]; then
     :
-    bash "$ROOT/scripts/compile-ios.sh" > /dev/null
+    bash "$ROOT/scripts/lib/compile-ios.sh" > /dev/null
 fi
 
 # 加解密成功后应有本地明文供部署使用。
 if [[ ! -f "$ROOT/shared/rime-ice/custom_phrase.txt" ]]; then
-    echo "缺少本地 custom_phrase.txt；如已有密文，请先运行 bash scripts/phrase-crypt.sh decrypt" >&2
+    echo "缺少本地 custom_phrase.txt；如已有密文，请先运行 bash scripts/lib/phrase-crypt.sh decrypt" >&2
     exit 1
 fi
 

@@ -25,7 +25,7 @@ if [[ "$JSONNET" != /* ]]; then
 fi
 export JSONNET
 
-repo_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
+repo_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../.." && pwd)
 work_dir=$(mktemp -d)
 trap 'rm -rf -- "$work_dir"' EXIT
 found=0

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # 跨电脑口令加密：需要 GnuPG，不依赖个人公钥或私钥。
 set -Eeuo pipefail
-ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
+ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../.." && pwd)"
 PLAIN="$ROOT/shared/rime-ice/custom_phrase.txt"
 CIPHER="$PLAIN.gpg"
 HASH_FILE="$PLAIN.sha256"
@@ -19,7 +19,7 @@ show_failure_help() {
 }
 trap show_failure_help ERR
 if [[ $# -gt 1 ]]; then
-    echo "用法：bash scripts/phrase-crypt.sh [encrypt|decrypt]" >&2
+    echo "用法：bash scripts/lib/phrase-crypt.sh [encrypt|decrypt]" >&2
     exit 2
 fi
 MODE="${1:-}"
@@ -37,7 +37,7 @@ if [[ $# -eq 0 ]]; then
 fi
 case "$MODE" in
     encrypt|decrypt) ;;
-    *) echo "用法：bash scripts/phrase-crypt.sh [encrypt|decrypt]" >&2; exit 2 ;;
+    *) echo "用法：bash scripts/lib/phrase-crypt.sh [encrypt|decrypt]" >&2; exit 2 ;;
 esac
 command -v gpg >/dev/null 2>&1 || { echo "请先安装 GnuPG（macOS：brew install gnupg）" >&2; exit 1; }
 sha256_file() {
@@ -85,5 +85,5 @@ case "$MODE" in
         sha256_file "$PLAIN" > "$HASH_FILE"
         echo "已解密：$PLAIN"
         ;;
-    *) echo "用法：bash scripts/phrase-crypt.sh [encrypt|decrypt]" >&2; exit 2 ;;
+    *) echo "用法：bash scripts/lib/phrase-crypt.sh [encrypt|decrypt]" >&2; exit 2 ;;
 esac

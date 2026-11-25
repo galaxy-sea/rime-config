@@ -36,7 +36,7 @@ if [[ ! -d "$FCITX_APP" ]]; then
 fi
 
 :
-bash "$ROOT/scripts/phrase-crypt.sh" > /dev/null
+bash "$ROOT/scripts/lib/phrase-crypt.sh" > /dev/null
 
 shopt -s nullglob
 for source_dir in "$ROOT/shared/rime-ice" "$ROOT/mac/RimeUserData/rime-ice"; do
@@ -97,7 +97,7 @@ fi
 command -v python3 >/dev/null 2>&1 || { echo "缺少 python3" >&2; exit 1; }
 
 # 先整理仓库词库，再复制到部署暂存目录；失败时停止部署。
-bash "$ROOT/scripts/organize-english.sh"
+bash "$ROOT/scripts/lib/organize-english.sh"
 
 :
 # 自动合并整棵配置目录，保留子目录；mac 配置覆盖共享同名文件。
