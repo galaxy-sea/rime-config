@@ -24,7 +24,7 @@ patch:
   "tech_codes/user_dict": tech_codes
   "tech_codes/db_class": userdb
   "tech_codes/enable_user_dict": true
-  "tech_codes/enable_completion": false
+  "tech_codes/enable_completion": true
   "tech_codes/enable_sentence": false
   "tech_codes/enable_encoder": false
   "tech_codes/initial_quality": 1.4
