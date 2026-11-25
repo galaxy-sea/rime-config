@@ -1,5 +1,14 @@
--- 将与完整输入一致的英文候选置顶，不改写候选，保留词频学习能力。
+-- 仅将 tech_codes 中启用且完整匹配输入的英文置顶。
 local M = {}
+
+-- 去重候选可能合并多个来源，逐个检查，避免把标准英文误当作技术词库。
+local function from_tech_codes(cand)
+  for _, genuine in ipairs(cand:get_genuines()) do
+    local phrase = genuine:to_phrase()
+    if phrase and phrase.lang_name == 'tech_codes' then return true end
+  end
+  return false
+end
 
 function M.func(input, env)
   local ctx = env.engine.context
@@ -16,7 +25,7 @@ function M.func(input, env)
     if promoted then
       yield(cand)
     elseif cand._start == 0 and cand._end == #raw
-      and cand.text:lower() == expected then
+      and cand.text:lower() == expected and from_tech_codes(cand) then
       yield(cand)
       for _, previous in ipairs(pending) do yield(previous) end
       pending = nil
