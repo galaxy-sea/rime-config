@@ -20,7 +20,7 @@ columns:
 ### 启用的
 
 #### 大小写转换
-CSDN csdn	101	101
+CSDN	csdn	101
 data	data	102
 DevOps	devops	101
 Docker	docker	101
@@ -30,7 +30,7 @@ IDEs	ides	101
 iOS	ios	102
 IoT	iot	101
 iPad	ipad	101
-iPhone  iphone	101	101
+iPhone	iphone	101
 Lua	lua	102
 MySQL	mysql	101
 Shell	shell	102
@@ -108,4 +108,5 @@ WebSocket	ws	101
 Zookeeper	zk	101
 
 ### 未启用的
+# ba	ba	101
 # bai	bai	101

@@ -74,6 +74,12 @@ def organize(source, standard_words=None):
                 f'第 {line_number} 行词条必须用两个 Tab 分隔为三个非空列'
                 '（词语、编码、权重），未修改文件：' + text
             )
+        # 本词库使用字母编码；纯数字编码通常是缺少 Tab 后把权重错当编码。
+        if code.strip().isdecimal():
+            raise ValueError(
+                f'第 {line_number} 行编码为纯数字，请检查是否把权重误写到编码列，'
+                f'未修改文件：{text}'
+            )
         try:
             numeric_weight = Decimal(weight)
             if not numeric_weight.is_finite():
