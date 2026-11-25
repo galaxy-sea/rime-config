@@ -1,13 +1,31 @@
-"""保留 Rime 词库头，合并同拼写词条，单独列出大小写冲突。"""
+"""保留 Rime 词库头和分类，忽略单词大小写，按编码及权重合并词条。"""
 import os
 import re
 import sys
 import tempfile
 from datetime import datetime
+from decimal import Decimal, InvalidOperation
 from pathlib import Path
 
 
-def organize(source):
+def load_standard_words(path):
+    lines = path.read_text(encoding='utf-8').splitlines()
+    boundary = next((i for i, line in enumerate(lines) if line.strip() == '...'), None)
+    if boundary is None:
+        raise ValueError('标准英文词库缺少正文分隔符')
+    words = set()
+    for line in lines[boundary + 1:]:
+        if not line.strip() or line.lstrip().startswith('#'):
+            continue
+        fields = line.split('\t')
+        word = fields[0].strip()
+        # 只采用自然拼写编码，避免把只能通过缩写输入的词当作标准完整词。
+        if word and (len(fields) == 1 or fields[1].strip().lower() == word.lower()):
+            words.add(word.lower())
+    return words
+
+
+def organize(source, standard_words=None):
     lines = source.splitlines(keepends=True)
     boundary = next((i for i, line in enumerate(lines)
                      if line.strip() == '...'), None)
@@ -56,21 +74,31 @@ def organize(source):
                 f'第 {line_number} 行词条必须用两个 Tab 分隔为三个非空列'
                 '（词语、编码、权重），未修改文件：' + text
             )
+        try:
+            numeric_weight = Decimal(weight)
+            if not numeric_weight.is_finite():
+                raise InvalidOperation
+        except InvalidOperation:
+            raise ValueError(f'第 {line_number} 行权重必须是有限数字，未修改文件：{text}')
+        # 标准词库已有的未启用普通词不再收集；启用项及快捷编码仍保留。
+        if (not enabled and standard_words and word.lower() in standard_words
+                and code.lower() == word.lower()):
+            continue
         record = (enabled, word, code, weight, category)
         variants = groups.setdefault(word.lower(), {})
-        identity = (word, code)
+        identity = (word.lower(), code)
         previous = variants.get(identity)
-        # 同词同编码才合并：启用项优先，保留其他快捷编码。
-        if previous is None or (enabled and not previous[0]):
+        # 忽略单词大小写；保留最高权重的原始写法，权重相同时启用项优先。
+        if (previous is None or numeric_weight > Decimal(previous[3])
+                or (numeric_weight == Decimal(previous[3]) and enabled and not previous[0])):
             variants[identity] = record
 
     sections = [[], [], []]
     for key in sorted(groups):
         variants = groups[key]
-        conflict = len({record[1] for record in variants.values()}) > 1
         for identity in sorted(variants):
             record = variants[identity]
-            index = 0 if conflict else (1 if record[0] else 2)
+            index = 1 if record[0] else 2
             sections[index].append(record)
     output = header
     if preamble:
@@ -105,7 +133,14 @@ def require_no_conflicts(result, path):
 def main():
     path = Path(sys.argv[1]).resolve(strict=True)
     original = path.read_bytes()
-    result = organize(original.decode('utf-8')).encode('utf-8')
+    standard_path = (Path(sys.argv[3]).expanduser() if len(sys.argv) > 3
+                     else Path.home() / '.local/share/fcitx5/rime/en_dicts/en.dict.yaml')
+    try:
+        standard_words = load_standard_words(standard_path)
+    except (OSError, ValueError, UnicodeError) as error:
+        print(f'标准英文词库不可用，跳过标准词对比：{error}', file=sys.stderr)
+        standard_words = set()
+    result = organize(original.decode('utf-8'), standard_words).encode('utf-8')
     if result == original:
         require_no_conflicts(result.decode('utf-8'), path)
         print('归类完成：内容没有变化。')

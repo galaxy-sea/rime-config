@@ -11,9 +11,11 @@ columns:
   - weight
 ...
 # 确认后删除行首的 # 和空格，再部署；注释状态不会进入候选。
+# 启用的102权重会覆盖101权重
 
 ### 冲突的
 
+#### 大小写转换
 
 ### 启用的
 
@@ -94,7 +96,7 @@ Docker	docker	101
 GitHub	github	101
 GPIO	gpio	101
 IDEs	ides	101
-iOS	ios	101
+iOS	ios	102
 IoT	iot	101
 iPad	ipad	101
 iPhone  iphone	101	101
@@ -104,5 +106,9 @@ Windows	win	101
 
 ### 未启用的
 # bai	bai	101
-# test	test	101
+# google	google	101
+# lib	lib	101
+# shell	shell	101
 # tab	tab	101
+# test	test	101
+# data	data	101
