@@ -46,6 +46,10 @@ for source_dir in "$ROOT/shared/rime-ice" "$ROOT/mac/RimeUserData/rime-ice"; do
     fi
 done
 
+command -v python3 >/dev/null 2>&1 || { echo "缺少 python3" >&2; exit 1; }
+# 先检查并整理词库，通过后才显示主题选择菜单。
+bash "$ROOT/scripts/lib/organize-english.sh"
+
 THEMES=()
 for css in "$ROOT"/mac/*/style.css; do
     [[ -f "$css" ]] && THEMES+=("$(dirname "$css")")
@@ -94,11 +98,6 @@ if [[ ! -f "$CSS_SOURCE" ]]; then
     echo "找不到主题 CSS：$CSS_SOURCE" >&2
     exit 1
 fi
-command -v python3 >/dev/null 2>&1 || { echo "缺少 python3" >&2; exit 1; }
-
-# 先整理仓库词库，再复制到部署暂存目录；失败时停止部署。
-bash "$ROOT/scripts/lib/organize-english.sh"
-
 :
 # 自动合并整棵配置目录，保留子目录；mac 配置覆盖共享同名文件。
 STAGE=$(mktemp -d)
