@@ -10,52 +10,61 @@ columns:
   - code
   - weight
 ...
+# 确认后删除行首的 # 和空格，再部署；注释状态不会进入候选。
 
-Spring Integration	si	101
+### 冲突的
+
+
+### 启用的
+
+#### 中文转换英文
+Author	zuoze	101
+condition	tiaojian	101
+Contribution	gongxian	101
+DOM树	domsu	101
+driver	qudon	101
+entity	sitilei	101
+Feature	texin	101
+Field	ziduan	101
+interface	jiekou	101
+merge	hebin	101
+method	fanfa	101
+native	bendi	101
+Oracle	jiaguwen	101
+plugin	cajian	101
+Tampermonkey	youhou	101
+Ubuntu	wubantu	101
+
+#### 快捷短语
+Android Studio	as	101
 Apache APISIX	aa	101
 Apache Dubbo	ad	101
 Apache RocketMQ	ar	101
 Apache Seata	as	101
 Apache SkyWalking	as	101
-Android Studio	as	101
-native	bendi	101
-plugin	cajian	101
 C/C++	cc	101
 cloudflare	cf	101
-CompletableFuture	cf	101
 Code Review	cr	101
-DevOps	devops	101
+CompletableFuture	cf	101
 DataGrip	dg	101
 Dromara mica mqtt	dmm	101
-Docker	docker	101
-DOM树	domsu	101
 Elasticsearch	es	101
-method	fanfa	101
-Contribution	gongxian	101
-GPIO	gpio	101
-merge	hebin	101
 Hibernate	hib	101
-IDEs	ides	101
 IntelliJ IDEA	ii	101
-IoT	iot	101
-JetBrains	jb	101
-Oracle	jiaguwen	101
-interface	jiekou	101
 JavaScript	js	101
-Kubernetes	kbs	101
+JetBrains	jb	101
 Kotlin	kt	101
+Kubernetes	kbs	101
 LoadBalancer	lb	101
-MyBatis	mb	101
 MacBook Pro	mbp	101
-MyBatis Plus	mbp	101
 Markdown	md	101
 MongoDB	mdb	101
-MySQL	mysql	101
+MyBatis	mb	101
+MyBatis Plus	mbp	101
 OceanBase	ob	101
 OpenFeign	of	101
 OpenRestry	or	101
 PostgreSQL	pgsql	101
-driver	qudon	101
 Spring Boot	sb	101
 Spring Cloud	sc	101
 Spring Cloud Alibaba	sca	101
@@ -67,19 +76,33 @@ Spring Cloud Netflix	scn	101
 Spring Cloud OpenFeign	sco	101
 Spring Data	sd	101
 Spring Framework	sf	101
-entity	sitilei	101
+Spring Integration	si	101
 Spring Security	ss	101
-Spring WebMVC	sw	101
 Spring WebFlux	sw	101
+Spring WebMVC	sw	101
 TDengine	td	101
-Feature	texin	101
-ThreadLoad	th	101
-condition	tiaojian	101
 ThinkPad	tp	101
+ThreadLoad	th	101
 TypeScript	ts	101
 WebSocket	ws	101
-Ubuntu	wubantu	101
-Tampermonkey	youhou	101
-Field	ziduan	101
 Zookeeper	zk	101
-Author	zuoze	101
+
+#### 大小写转换
+CSDN csdn	101	101
+DevOps	devops	101
+Docker	docker	101
+GitHub	github	101
+GPIO	gpio	101
+IDEs	ides	101
+iOS	ios	101
+IoT	iot	101
+iPad	ipad	101
+iPhone  iphone	101	101
+MySQL	mysql	101
+VS Code	vscode	101
+Windows	win	101
+
+### 未启用的
+# bai	bai	101
+# test	test	101
+# tab	tab	101

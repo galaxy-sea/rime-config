@@ -1,5 +1,10 @@
 # macOS 雾凇拼音个性化补丁，保留官方组件，仅追加自定义功能。
 patch:
+  # mac 专用：回车上屏的纯英文以注释形式追加到仓库词库，人工确认后启用。
+  "engine/processors/@before 0": lua_processor@*english_capture
+  "english_capture":
+    __include: english_capture:/config
+
   # 候选权重。
   "translator/initial_quality": 1.2
   "melt_eng/initial_quality": 1.1

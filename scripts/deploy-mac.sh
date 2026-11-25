@@ -96,6 +96,9 @@ if [[ ! -f "$CSS_SOURCE" ]]; then
 fi
 command -v python3 >/dev/null 2>&1 || { echo "缺少 python3" >&2; exit 1; }
 
+# 先整理仓库词库，再复制到部署暂存目录；失败时停止部署。
+bash "$ROOT/scripts/organize-english.sh"
+
 :
 # 自动合并整棵配置目录，保留子目录；mac 配置覆盖共享同名文件。
 STAGE=$(mktemp -d)
@@ -105,6 +108,16 @@ for source_dir in "$ROOT/shared/rime-ice" "$ROOT/mac/RimeUserData/rime-ice"; do
         "$source_dir/" "$STAGE/"
 done
 find "$STAGE" -type f -iname '.DS_Store' -delete
+
+# 运行时直接追加到当前仓库；JSON 也是有效 YAML，安全处理路径中的特殊字符。
+python3 - "$STAGE/english_capture.yaml" "$ROOT/shared/rime-ice/tech_codes.dict.yaml" <<'PYCAPTURE'
+import json
+import sys
+from pathlib import Path
+Path(sys.argv[1]).write_text(
+    json.dumps({'config': {'output_path': sys.argv[2]}}, ensure_ascii=False) + '\n'
+)
+PYCAPTURE
 
 mkdir -p "$RIME_DIR"
 # 覆盖应用图标需要权限时，提前验证，避免部署一半才失败。

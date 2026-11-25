@@ -16,3 +16,4 @@
 
 # 设备日志与完整配置可能包含私人数据
 /.log/
+/backups/english-dictionary/
