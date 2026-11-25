@@ -32,3 +32,7 @@ patch:
 
   # 在官方过滤器之前处理原始候选，避免操作简繁、Emoji、去重包装。
   "engine/filters/@before 0": lua_filter@*fucking_gh_select
+
+  # 在原有过滤器之后，将与完整输入一致的英文候选置顶（忽略大小写）。
+  "engine/filters/+":
+    - lua_filter@*english_exact_first
