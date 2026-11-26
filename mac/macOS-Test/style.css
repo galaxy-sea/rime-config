@@ -1,11 +1,16 @@
 /* 仅在支持该液态玻璃材质时启用整套主题。 */
 @supports (-apple-visual-effect: -apple-system-glass-material-subdued) {
+
     /* 浅色应用 */
     #fcitx-theme {
         color-scheme: light !important;
 
-        --pinyin-text: #202020;
-        --pinyin-label: #808080;
+        /* 深浅灰候选文字和序号，使用不透明 RGB 颜色。 */
+        --pinyin-text: rgb(32 32 32);
+        --pinyin-label: rgb(96 96 96);
+        --pinyin-highlight-text: rgb(245 245 245);
+        --pinyin-divider-color: rgb(32 32 32 / 10%);
+        --pinyin-arrow-opacity: 0.55;
 
         /* 滚动条颜色及上下留白 */
         --pinyin-scrollbar-track: rgb(0 0 0 / 6%);
@@ -23,6 +28,15 @@
 
         --light-label-color: var(--pinyin-label) !important;
         --dark-label-color: var(--pinyin-label) !important;
+
+        --light-highlight-text-color: var(--pinyin-highlight-text) !important;
+        --dark-highlight-text-color: var(--pinyin-highlight-text) !important;
+
+        /* 清除官方面板背景颜色 */
+        --light-panel-color: transparent !important;
+        --dark-panel-color: transparent !important;
+        --light-panel-color-no-image: transparent !important;
+        --dark-panel-color-no-image: transparent !important;
     }
 
     /* 深色应用自动切换；VS Code 使用独立编辑器主题，按应用指定深色。 */
@@ -30,8 +44,11 @@
     #fcitx-theme[data-fcitx-app-id="com.microsoft.VSCode"] {
         color-scheme: dark !important;
 
-        --pinyin-text: #f5f5f5;
-        --pinyin-label: #a0a0a0;
+        --pinyin-text: rgb(230 230 230);
+        --pinyin-label: rgb(170 170 170);
+        --pinyin-highlight-text: rgb(240 240 240);
+        --pinyin-divider-color: rgb(230 230 230 / 10%);
+        --pinyin-arrow-opacity: 0.45;
 
         --pinyin-scrollbar-track: rgb(255 255 255 / 5%);
         --pinyin-scrollbar-thumb: rgb(255 255 255 / 25%);
@@ -79,16 +96,6 @@
         background-color: var(--pinyin-scrollbar-hover) !important;
     }
 
-    /* 液态玻璃 */
-    /* 清除官方面板背景颜色 */
-    #fcitx-theme {
-        --light-panel-color: transparent !important;
-        --dark-panel-color: transparent !important;
-
-        --light-panel-color-no-image: transparent !important;
-        --dark-panel-color-no-image: transparent !important;
-    }
-
     /* 关闭官方边框和阴影，保留圆角裁剪 */
     #fcitx-theme .fcitx-panel {
         --border-width: 0px !important;
@@ -127,4 +134,18 @@
         -apple-visual-effect:
             -apple-system-glass-material-subdued !important;
     }
+
+    /* 右侧分割线：仅改变视觉，不改变布局 */
+    #fcitx-theme .fcitx-horizontal .fcitx-divider-paging .fcitx-divider-middle {
+        background: var(--pinyin-divider-color) !important;
+        border-radius: 1px !important;
+        transform: scaleY(0.65) !important;
+    }
+
+    /* 下拉箭头：缩小尺寸，保留原生旋转方向 */
+    #fcitx-theme .fcitx-horizontal .fcitx-expand svg {
+        scale: 0.75 !important;
+        opacity: var(--pinyin-arrow-opacity) !important;
+    }
+
 }
