@@ -24,15 +24,11 @@ ABAC	abac	105
 ACID	acid	105
 ACK	ack	102
 ACL	acl	102
-AES	aes	102
 AMQP	amqp	105
 AOP	aop	102
 AOT	aot	102
 API	api	102
-ASCII	ascii	115
-BDD	bdd	102
 BIO	bio	102
-BO	bo	102
 BOM	bom	102
 BTree	btree	115
 CAP	cap	102
@@ -169,8 +165,6 @@ SSD	ssd	102
 SSE	sse	102
 SSH	ssh	102
 SSL	ssl	102
-SSM	ssm	102
-SSO	sso	102
 SSRF	ssrf	105
 TCL	tcl	102
 TCP	tcp	102
