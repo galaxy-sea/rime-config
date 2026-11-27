@@ -118,9 +118,9 @@ function M.func(key, env)
   -- 直通英文模式没有完整预编辑内容，不能通过这个处理器收集。
   if ctx:get_option('ascii_mode') or not ctx:is_composing() then return 2 end
   local word = ctx.input or ''
-  -- 三字母输入由用户手动维护，既不自动收集，也不增加回车词频。
-  if #word == 3 then return 2 end
-  if #word >= 2 and #word <= 64 and word:match('^[A-Za-z]+$') then
+  -- 三个字母及以内的输入由用户手动维护，不自动收集或增加回车词频。
+  if #word <= 3 then return 2 end
+  if #word <= 64 and word:match('^[A-Za-z]+$') then
     -- 在原生回车处理前检查；之后候选会被清除，不能在 commit 通知中检查。
     local ok, known = pcall(find_dictionary_candidate, ctx, word)
     if not ok then warn('候选检查失败，保留收集记录：' .. tostring(known)) end

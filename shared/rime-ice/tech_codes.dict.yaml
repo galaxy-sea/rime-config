@@ -46,7 +46,6 @@ CSP	csp	102
 CSRF	csrf	105
 CSS	css	102
 CTE	cte	102
-DAO	dao	102
 data	data	102
 DBMS	dbms	105
 DCL	dcl	102
@@ -60,7 +59,6 @@ Docker	docker	102
 DOM	dom	102
 DoS	dos	102
 DQL	dql	102
-DTO	dto	102
 FaaS	faas	105
 FTP	ftp	102
 GC	gc	102
@@ -139,7 +137,6 @@ PaaS	paas	105
 PKI	pki	102
 POJO	pojo	105
 POM	pom	102
-POP	pop	102
 PostgreSQL	pgsql	115
 Raft	raft	105
 RAM	ram	102
@@ -184,7 +181,6 @@ URN	urn	102
 UTF	utf	102
 UUID	uuid	105
 UX	ux	102
-VO	vo	102
 VPN	vpn	102
 VS Code	vscode	102
 Vue	vue	102
@@ -276,9 +272,3 @@ WebSocket	ws	101
 Zookeeper	zk	101
 
 ### 未启用的
-# angla	angla	101
-# ba	ba	101
-# bai	bai	101
-# hs	hs	101
-# re	re	101
-# vs	vs	101
