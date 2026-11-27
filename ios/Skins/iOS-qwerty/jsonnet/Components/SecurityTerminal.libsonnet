@@ -69,8 +69,11 @@ local toolbar(kb, isDark) =
 
 local securityIcon(symbol, color) = {
   buttonStyleType: 'systemImage',
-  systemImageName: symbol,
-  highlightSystemImageName: symbol,
+  systemImageName: { ios: symbol, android:
+    if symbol == 'link.icloud.fill' then 'link'
+    else if symbol == 'key.icloud.fill' then 'vpn_key'
+    else 'lock' },
+  highlightSystemImageName: self.systemImageName,
   fontSize: 11,
   // 图标与五字状态文本组合显示，保持固定内边距。
   // 两层共同以按钮中心为基准：图标左移 31.5pt，文字右移 5.5pt。

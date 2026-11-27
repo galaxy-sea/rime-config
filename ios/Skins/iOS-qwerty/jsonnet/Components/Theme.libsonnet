@@ -35,6 +35,12 @@ local returnKeyIcons = [
   'arrow.right.to.line', 'location.fill', 'magnifyingglass', 'arrow.up',
   'magnifyingglass', 'checkmark', 'phone.fill', 'arrow.right',
 ];
+local androidReturnKeyIcons = [
+  'keyboard_return', 'arrow_forward', 'search', 'arrow_forward',
+  'last_page', 'navigation', 'search', 'arrow_upward',
+  'search', 'check', 'phone', 'arrow_forward',
+];
+local returnIcon(i) = { ios: returnKeyIcons[i], android: androidReturnKeyIcons[i] };
 local returnIconName(i) = 'returnKey' + std.toString(i) + 'ForegroundStyle';
 local enterForegroundStyle = [
   Style.when('$returnKeyType', [i], returnIconName(i))
@@ -127,9 +133,9 @@ local buttonBackground(insets, normalColor, highlightColor) = Style.geometry({
     },
   } + {
     [returnIconName(i)]: Style.systemImage({
-      systemImageName: returnKeyIcons[i],
+      systemImageName: returnIcon(i),
       // 按下时继续显示同一图标，避免客户端使用空的高亮图标。
-      highlightSystemImageName: returnKeyIcons[i],
+      highlightSystemImageName: returnIcon(i),
       fontSize: 20,
       fontWeight: 'medium',
       normalColor: if i == 0 then colors.systemButtonForegroundColor else '#FFFFFF',

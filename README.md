@@ -7,8 +7,7 @@
 rime-dotfiles/
 ├── shared/       # 雾凇拼音、词库、Lua 脚本
 ├── macos/        # Fcitx5 macOS
-├── ios/          # 元书（iPhone、iPad）
-├── android/      # 同文输入法
+├── ios/          # 元书（iPhone、iPad、android）
 ├── scripts/      # 编译、同步、部署脚本
 └── README.md
 ```
@@ -70,6 +69,27 @@ chmod +x scripts/deploy-ios.sh
 - [uv 官方文档](https://docs.astral.sh/uv/)
 - [元书输入法](https://ihsiao.com/apps/hamster/v3/docs/)
 
+
+## Android 上传
+
+开启 USB 调试并授权电脑后运行：
+
+```bash
+bash scripts/deploy-android.sh
+# 多设备时指定目标：
+ANDROID_SERIAL=设备序列号 bash scripts/deploy-android.sh
+```
+
+复用 `ios/` 主题和配置，自动调用短语加解密及主题编译，通过 adb + root
+自动检测 root 权限。有 root 时直接上传到当前 Android 用户的元书
+`files/Documents/` 目录，需要在手机上授权 adb shell 使用 `su`。
+无 root（或拒绝授权）时上传到 `Download/rime-config/`，再通过 MT 管理器的
+「元书」存储入口手动复制：主题目录替换，配置和脚本按文件合并。
+已有编译结果可设置 `SKIP_BUILD=1`。
+
+主题目录按主题替换；`RimeUserData/` 和 `Scripts/` 按文件覆盖合并，不删除其他
+Lua 文件及用户词频数据库。自动修正文件属主和 SELinux 标签，不上传
+`.DS_Store`、短语密文、哈希缓存及临时文件。上传后在元书中部署并重载皮肤即可。
 
 # 无法实现的功能
 
